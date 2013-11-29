@@ -1,0 +1,63 @@
+\select@language {english}
+\contentsline {chapter}{\numberline {1}Introduction}{5}{chapter.1}
+\contentsline {section}{\numberline {1.1}Purpose}{5}{section.1.1}
+\contentsline {section}{\numberline {1.2}Scope}{6}{section.1.2}
+\contentsline {section}{\numberline {1.3}Definitions, acronyms, abbreviations}{7}{section.1.3}
+\contentsline {subsection}{\numberline {1.3.1}Definitions}{7}{subsection.1.3.1}
+\contentsline {subsection}{\numberline {1.3.2}Acronyms and abbreviations}{7}{subsection.1.3.2}
+\contentsline {section}{\numberline {1.4}Reference documents}{7}{section.1.4}
+\contentsline {section}{\numberline {1.5}Overview}{8}{section.1.5}
+\contentsline {chapter}{\numberline {2}Overall Description}{9}{chapter.2}
+\contentsline {section}{\numberline {2.1}Product perspective}{9}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}System interfaces}{9}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}User interfaces}{9}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}Hardware interfaces}{15}{subsection.2.1.3}
+\contentsline {subsection}{\numberline {2.1.4}Software interfaces}{15}{subsection.2.1.4}
+\contentsline {subsection}{\numberline {2.1.5}Communications interfaces}{15}{subsection.2.1.5}
+\contentsline {subsection}{\numberline {2.1.6}Memory}{15}{subsection.2.1.6}
+\contentsline {subsection}{\numberline {2.1.7}Operations}{15}{subsection.2.1.7}
+\contentsline {subsection}{\numberline {2.1.8}Site adaptation requirements}{16}{subsection.2.1.8}
+\contentsline {section}{\numberline {2.2}Product functions}{16}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}General requirements}{16}{subsection.2.2.1}
+\contentsline {subsubsection}{Managing users}{16}{section*.2}
+\contentsline {subsubsection}{Managing components}{17}{section*.3}
+\contentsline {subsubsection}{Managing packages}{17}{section*.4}
+\contentsline {subsubsection}{Managing customized packages}{17}{section*.5}
+\contentsline {section}{\numberline {2.3}User characteristics}{17}{section.2.3}
+\contentsline {section}{\numberline {2.4}Constraints}{18}{section.2.4}
+\contentsline {section}{\numberline {2.5}Assumptions and Dependencies}{18}{section.2.5}
+\contentsline {section}{\numberline {2.6}Apportioning of requirements}{18}{section.2.6}
+\contentsline {chapter}{\numberline {3}Specific Requirements}{19}{chapter.3}
+\contentsline {section}{\numberline {3.1}External Interface Requirements}{19}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}User Interfaces}{19}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Hardware Interfaces}{19}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}Software Interfaces}{19}{subsection.3.1.3}
+\contentsline {subsection}{\numberline {3.1.4}Communication Interfaces}{19}{subsection.3.1.4}
+\contentsline {section}{\numberline {3.2}Functional Requirements}{20}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Scenarios}{20}{subsection.3.2.1}
+\contentsline {subsubsection}{Unregistered user search for a package}{20}{section*.6}
+\contentsline {subsubsection}{Customer registration in the system}{21}{section*.7}
+\contentsline {subsubsection}{Employee registration in the system}{21}{section*.8}
+\contentsline {subsubsection}{User logs into the system}{22}{section*.9}
+\contentsline {subsubsection}{User change his/her data}{22}{section*.10}
+\contentsline {subsubsection}{Employee adds a component}{23}{section*.11}
+\contentsline {subsubsection}{Employee modify a component}{23}{section*.12}
+\contentsline {subsubsection}{Employee adds a package}{24}{section*.13}
+\contentsline {subsubsection}{Employee modify a package}{24}{section*.14}
+\contentsline {subsubsection}{Customer customize a package}{25}{section*.15}
+\contentsline {subsubsection}{Customer modify a customized package}{25}{section*.16}
+\contentsline {subsection}{\numberline {3.2.2}Analysis model}{26}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Activity model}{26}{subsection.3.2.3}
+\contentsline {subsection}{\numberline {3.2.4}Use case model}{27}{subsection.3.2.4}
+\contentsline {subsubsection}{Unregistered user}{27}{section*.17}
+\contentsline {subsubsection}{Customers}{28}{section*.18}
+\contentsline {subsubsection}{Employees}{29}{section*.19}
+\contentsline {section}{\numberline {3.3}Performance Requirements}{29}{section.3.3}
+\contentsline {section}{\numberline {3.4}Design Constraints}{29}{section.3.4}
+\contentsline {section}{\numberline {3.5}Software System Attributes}{30}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Reliability}{30}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}Availability}{30}{subsection.3.5.2}
+\contentsline {subsection}{\numberline {3.5.3}Security}{30}{subsection.3.5.3}
+\contentsline {subsection}{\numberline {3.5.4}Maintainability}{30}{subsection.3.5.4}
+\contentsline {subsection}{\numberline {3.5.5}Portability}{30}{subsection.3.5.5}
+\contentsline {section}{\numberline {3.6}Other Requirements}{30}{section.3.6}

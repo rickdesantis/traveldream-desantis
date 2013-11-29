@@ -1,0 +1,260 @@
+
+<alloy builddate="2012-09-25 15:54 EDT">
+
+<instance bitwidth="4" maxseq="4" command="show metamodel" filename="/Users/ft/Dropbox/University/MOS/Software Engineering 2/progetto/RASD/alloy.als" metamodel="yes">
+
+<sig label="seq/Int" ID="0" parentID="1" builtin="yes">
+</sig>
+
+<sig label="Int" ID="1" parentID="2" builtin="yes">
+</sig>
+
+<sig label="String" ID="3" parentID="2" builtin="yes">
+</sig>
+
+<sig label="this/wString" ID="4" parentID="2">
+</sig>
+
+<sig label="this/posInt" ID="5" parentID="2">
+</sig>
+
+<field label="value" ID="6" parentID="5">
+   <types> <type ID="5"/> <type ID="1"/> </types>
+</field>
+
+<sig label="this/customer" ID="7" parentID="8" one="yes">
+</sig>
+
+<sig label="this/employee" ID="9" parentID="8" one="yes">
+</sig>
+
+<sig label="this/UserType" ID="8" parentID="2" abstract="yes" enum="yes">
+</sig>
+
+<sig label="this/true" ID="10" parentID="11" one="yes">
+</sig>
+
+<sig label="this/false" ID="12" parentID="11" one="yes">
+</sig>
+
+<sig label="this/Boolean" ID="11" parentID="2" abstract="yes" enum="yes">
+</sig>
+
+<sig label="this/User" ID="13" parentID="2">
+</sig>
+
+<field label="id" ID="14" parentID="13">
+   <types> <type ID="13"/> <type ID="5"/> </types>
+</field>
+
+<field label="username" ID="15" parentID="13">
+   <types> <type ID="13"/> <type ID="4"/> </types>
+</field>
+
+<field label="password" ID="16" parentID="13">
+   <types> <type ID="13"/> <type ID="4"/> </types>
+</field>
+
+<field label="fullname" ID="17" parentID="13">
+   <types> <type ID="13"/> <type ID="4"/> </types>
+</field>
+
+<field label="email" ID="18" parentID="13">
+   <types> <type ID="13"/> <type ID="4"/> </types>
+</field>
+
+<field label="type" ID="19" parentID="13">
+   <types> <type ID="13"/> <type ID="8"/> </types>
+</field>
+
+<field label="packages" ID="20" parentID="13">
+   <types> <type ID="13"/> <type ID="0"/> <type ID="21"/> </types>
+</field>
+
+<sig label="this/Excursion" ID="22" parentID="23">
+</sig>
+
+<field label="type" ID="24" parentID="22">
+   <types> <type ID="22"/> <type ID="4"/> </types>
+</field>
+
+<sig label="this/Hotel" ID="25" parentID="23">
+</sig>
+
+<field label="city" ID="26" parentID="25">
+   <types> <type ID="25"/> <type ID="4"/> </types>
+</field>
+
+<field label="stars" ID="27" parentID="25">
+   <types> <type ID="25"/> <type ID="5"/> </types>
+</field>
+
+<field label="address" ID="28" parentID="25">
+   <types> <type ID="25"/> <type ID="4"/> </types>
+</field>
+
+<field label="telephone" ID="29" parentID="25">
+   <types> <type ID="25"/> <type ID="4"/> </types>
+</field>
+
+<sig label="this/Flight" ID="30" parentID="23">
+</sig>
+
+<field label="from" ID="31" parentID="30">
+   <types> <type ID="30"/> <type ID="4"/> </types>
+</field>
+
+<field label="to" ID="32" parentID="30">
+   <types> <type ID="30"/> <type ID="4"/> </types>
+</field>
+
+<field label="leavingTimes" ID="33" parentID="30">
+   <types> <type ID="30"/> <type ID="0"/> <type ID="4"/> </types>
+</field>
+
+<field label="company" ID="34" parentID="30">
+   <types> <type ID="30"/> <type ID="4"/> </types>
+</field>
+
+<sig label="this/CarRental" ID="35" parentID="23">
+</sig>
+
+<field label="from" ID="36" parentID="35">
+   <types> <type ID="35"/> <type ID="4"/> </types>
+</field>
+
+<field label="to" ID="37" parentID="35">
+   <types> <type ID="35"/> <type ID="4"/> </types>
+</field>
+
+<field label="car" ID="38" parentID="35">
+   <types> <type ID="35"/> <type ID="4"/> </types>
+</field>
+
+<field label="company" ID="39" parentID="35">
+   <types> <type ID="35"/> <type ID="4"/> </types>
+</field>
+
+<sig label="this/Train" ID="40" parentID="23">
+</sig>
+
+<field label="from" ID="41" parentID="40">
+   <types> <type ID="40"/> <type ID="4"/> </types>
+</field>
+
+<field label="to" ID="42" parentID="40">
+   <types> <type ID="40"/> <type ID="4"/> </types>
+</field>
+
+<field label="leavingTimes" ID="43" parentID="40">
+   <types> <type ID="40"/> <type ID="0"/> <type ID="4"/> </types>
+</field>
+
+<field label="company" ID="44" parentID="40">
+   <types> <type ID="40"/> <type ID="4"/> </types>
+</field>
+
+<sig label="this/Component" ID="23" parentID="2" abstract="yes">
+</sig>
+
+<field label="id" ID="45" parentID="23">
+   <types> <type ID="23"/> <type ID="5"/> </types>
+</field>
+
+<field label="name" ID="46" parentID="23">
+   <types> <type ID="23"/> <type ID="4"/> </types>
+</field>
+
+<field label="description" ID="47" parentID="23">
+   <types> <type ID="23"/> <type ID="4"/> </types>
+</field>
+
+<field label="price" ID="48" parentID="23">
+   <types> <type ID="23"/> <type ID="5"/> </types>
+</field>
+
+<sig label="this/Package" ID="49" parentID="2">
+</sig>
+
+<field label="id" ID="50" parentID="49">
+   <types> <type ID="49"/> <type ID="4"/> </types>
+</field>
+
+<field label="name" ID="51" parentID="49">
+   <types> <type ID="49"/> <type ID="4"/> </types>
+</field>
+
+<field label="days" ID="52" parentID="49">
+   <types> <type ID="49"/> <type ID="5"/> </types>
+</field>
+
+<field label="components" ID="53" parentID="49">
+   <types> <type ID="49"/> <type ID="0"/> <type ID="23"/> </types>
+</field>
+
+<sig label="this/ActualComponent" ID="54" parentID="2">
+</sig>
+
+<field label="date" ID="55" parentID="54">
+   <types> <type ID="54"/> <type ID="4"/> </types>
+</field>
+
+<field label="component" ID="56" parentID="54">
+   <types> <type ID="54"/> <type ID="23"/> </types>
+</field>
+
+<sig label="this/CustomizedPackage" ID="21" parentID="2">
+</sig>
+
+<field label="id" ID="57" parentID="21">
+   <types> <type ID="21"/> <type ID="4"/> </types>
+</field>
+
+<field label="days" ID="58" parentID="21">
+   <types> <type ID="21"/> <type ID="5"/> </types>
+</field>
+
+<field label="completed" ID="59" parentID="21">
+   <types> <type ID="21"/> <type ID="11"/> </types>
+</field>
+
+<field label="user" ID="60" parentID="21">
+   <types> <type ID="21"/> <type ID="13"/> </types>
+</field>
+
+<field label="package" ID="61" parentID="21">
+   <types> <type ID="21"/> <type ID="49"/> </types>
+</field>
+
+<field label="actualComponents" ID="62" parentID="21">
+   <types> <type ID="21"/> <type ID="0"/> <type ID="54"/> </types>
+</field>
+
+<sig label="ordering/Ord" ID="63" parentID="2" one="yes" private="yes">
+</sig>
+
+<field label="First" ID="64" parentID="63" private="yes">
+   <types> <type ID="63"/> <type ID="8"/> </types>
+</field>
+
+<field label="Next" ID="65" parentID="63" private="yes">
+   <types> <type ID="63"/> <type ID="8"/> <type ID="8"/> </types>
+</field>
+
+<sig label="open$3/Ord" ID="66" parentID="2" one="yes" private="yes">
+</sig>
+
+<field label="First" ID="67" parentID="66" private="yes">
+   <types> <type ID="66"/> <type ID="11"/> </types>
+</field>
+
+<field label="Next" ID="68" parentID="66" private="yes">
+   <types> <type ID="66"/> <type ID="11"/> <type ID="11"/> </types>
+</field>
+
+<sig label="univ" ID="2" builtin="yes">
+</sig>
+
+</instance>
+
+</alloy>

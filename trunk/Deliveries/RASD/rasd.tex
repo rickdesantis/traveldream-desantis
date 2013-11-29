@@ -1,0 +1,861 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{fancyvrb}
+\usepackage{eurosym}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{multirow}
+\usepackage[font={footnotesize,it}]{caption}
+
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.5}
+
+\usepackage[margin=0.7in]{geometry}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=trbl,
+  %xleftmargin=\parindent,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  %identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  numbers=left,
+  tabsize=2,
+  frameround=tttt,
+  numberstyle=\footnotesize\ttfamily,
+  xrightmargin=50pt,
+  xleftmargin=50pt,
+  escapeinside={(*@}{@*)},
+  morekeywords={pipe,module,in,out},
+}
+\lstset{escapechar=@,style=customc}
+
+\usepackage{ifpdf}
+\ifpdf
+    \usepackage[pdftex]{graphicx}   % to include graphics
+    \pdfcompresslevel=9
+    \usepackage[pdftex,     % sets up hyperref to use pdftex driver
+            plainpages=false,   % allows page i and 1 to exist in the same document
+            breaklinks=true,    % link texts can be broken at the end of line
+            colorlinks=true,
+            pdftitle={RASD for the TravelDream Project}
+            pdfauthor={Riccardo B. Desantis}
+           ]{hyperref}
+    \usepackage{thumbpdf}
+\else
+    \usepackage{graphicx}       % to include graphics
+    \usepackage{hyperref}       % to simplify the use of \href
+\fi
+
+\graphicspath{{images/}}
+
+\newcommand{\insimg}[3]{
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[scale=#3]{#1}
+    \end{center}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}
+}
+
+\newcommand{\putimg}[2]{
+  \begin{center}
+    \includegraphics[scale=#2]{#1}
+  \end{center}
+}
+
+\newenvironment{sistema}%
+{\left\lbrace\begin{array}{@{}l@{}}}%
+  {\end{array}\right.}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+
+\newcommand{\italiano}[1]{%
+  \begin{otherlanguage*}{italian}#1\end{otherlanguage*}}
+
+\lstnewenvironment{code}[1][]{ %
+  \lstset{ %
+    mathescape,
+    numbers=none,
+    frame=none,
+    basicstyle=\normalsize\ttfamily,
+    xleftmargin=2em,
+    #1
+  }}%
+  {}
+
+\newcommand{\linecode}[2]{ %
+  \lstinline[mathescape,#2]|#1|}
+
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+%\usepackage{marvosym}
+% \DeclareUnicodeCharacter{1e25}{\DOTH{}}
+
+
+\begin{document}
+
+\title{\textbf{TravelDream Project}}
+\author{\textbf{Requirements Analysis Specification Document}}
+\date{Riccardo B. Desantis - matr. 765106}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{Purpose}
+This document introduces and defines the general functionalities of the e-commerce system, called \textbf{TravelDream}, that is being developed for the TravelDream company to support its sale process. The \textbf{users} of this system are:
+\begin{itemize}
+  \item The TravelDream \textbf{employees}: they add/delete/modify the basic products that can compose a travel. For the moment the company is offering as basic products only flights, hotels, and pre-planned excursions but in the future it plans to include also other transportation means (e.g., trains, car rental, \dots). Moreover, they create predefined travel packages to be sold to customers.
+  \item The TravelDream \textbf{customers}: after registering with the system, they can browse and search through the travel packages, select one of them, and personalize it; for instance, adding the departure and return date and modifying hotels and pre-planned excursions.
+\end{itemize}
+
+This is a \textbf{customer-driven}, \textbf{problem-driven}, \textbf{greenfield} and \textbf{single-product} project, with a \textbf{bespoke} development process.\newline
+
+Some \textbf{risks} that should be taken into account in this development process are:
+\begin{itemize}
+  \item Working on the project alone, there could be some problem in meeting the deadlines.
+  \begin{itemize}[noitemsep]
+    \item Probability of occurrence: $ 0.4 $;
+    \item Severity: $ 9/10 $.
+  \end{itemize}
+  \item The requests of the project are clear and understandable, but still there could be some hidden knowledge that could lead to some misunderstanding.
+  \begin{itemize}[noitemsep]
+    \item Probability of occurrence: $ 0.2 $;
+    \item Severity: $ 5/10 $.
+  \end{itemize}
+  \item The system developed could have some performance issues.
+  \begin{itemize}[noitemsep]
+    \item Probability of occurrence: $ 0.4 $;
+    \item Severity: $ 2/10 $.
+  \end{itemize}
+\end{itemize}
+
+The \textbf{audience} of this document are:
+\begin{itemize}
+  \item the \textbf{users}, to check if their goals are met;
+  \item the \textbf{testers}, to check if the system works as expected, according to the requirements and goals;
+  \item the \textbf{project managers} at the company, for checking if their requirements are understood and met;
+  \item the \textbf{developer} that will take part at the developing process.
+\end{itemize}
+
+\section{Scope}
+We can assume that the company is using at the moment a local system which is only accessible to the employees, accessed via terminals in the same building where the database is. The old records are written in some paper register. Therefore, the \textbf{world} in our system is this system.\newline
+
+The \textbf{machine} in our system is the web application that we are going to develop. It is going to give to the customers the possibility to personalize the travel packages, operation that it was only accessible to the employees before.\newline
+
+We could define those goals for our project:
+\begin{itemize}
+  \item \textbf{G1}: Allow people to search for packages.
+  \item \textbf{G2}: People can join the system as customers.
+  \item \textbf{G3}: Employees can join the system.
+  \item \textbf{G4}: Employees can add/remove/modify basic components that can compose a travel, which are flights, other transportation means (e.g., trains, car rental, \dots), hotels, and pre-planned excursions.
+  \item \textbf{G5}: Employees can add/remove/modify travel packages, creating them starting from the basic components.
+  \item \textbf{G6}: Customer can customize packages. They should be able to browse and search through the travel packages, select one of them, and personalize it, for instance, adding the departure and return date and modifying hotels and pre-planned excursions.
+\end{itemize}
+
+Using the Jackson-Zave approach, we could draw this graph:
+\putimg{jackson-zave}{0.3}
+
+The \textbf{stakeholders} for this project are:
+\begin{itemize}
+  \item the customers and the employees that will use the system;
+  \item the user support staff that will help the customers understanding the system, and the call center operators that will be helping the users in need;
+  \item the head of the company, that is paying for the project.
+\end{itemize}
+
+\section{Definitions, acronyms, abbreviations}
+
+\subsection{Definitions}
+Here are the definitions of the terms used:
+\begin{itemize}
+  \item \textbf{Customer}: a customer of the company, a person willing to buy a travel package.
+  \item \textbf{Registered Customer}: a registered customer in our system, that is a person which entered his/her data in our system.
+  \item \textbf{Employee}: an employee of the TravelDream company.
+  \item \textbf{Basic Products}: one of these elements:
+  \begin{itemize}
+    \item a flight;
+    \item a car rental;
+    \item a train;
+    \item a hotel;
+    \item an excursion.
+  \end{itemize}
+  \item \textbf{Travel Package}: a package composed of some basic products, created by an employee. We can assume that it can only be created or removed.
+  \item \textbf{Customized Travel Package}: a travel package modified by a customer, with a specific flight (e.g., with a departing and returning date) etc.
+\end{itemize}
+
+\subsection{Acronyms and abbreviations}
+The acronyms and abbreviations used are:
+\begin{itemize}
+  \item \textbf{XML}: Extensible Markup Language.
+  \item \textbf{RASD}: Requirements Analysis and Specification Document.
+  \item \textbf{NFR}: Non-functional Requirements.
+  \item \textbf{QA}: Quality Attributes.
+  \item \textbf{FR}: Functional Requirement.
+  \item \textbf{G}: Goal.
+  \item \textbf{DBMS}: Database Management System.
+  \item \textbf{AS}: Application Server.
+  \item \textbf{JEE}: Java Enterprise Edition.
+\end{itemize}
+
+\section{Reference documents}
+The documents used for the writing of this RASD are:
+\begin{enumerate}
+  \item IEEE Recommended Practice for Software Requirements Specifications: \url{http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=5841};
+  \item Alloy model file: TravelDream.als.
+\end{enumerate}
+
+\section{Overview}
+This document is divided among four sections:
+\begin{enumerate}
+  \item \textbf{Introduction}: provides a synopsis of the software product to be developed.
+  \item \textbf{Overall description}: describes the general factors that affect the software product and its requirements.
+  \item \textbf{Specific requirements}: contains the artifacts generated by the analysis. It describes all of the software requirements to a level of detail sufficient to be externally perceivable.
+  \item \textbf{Appendixes}: provides supporting information about how the alloy model contributed to the requirement analysis and analysis model.
+\end{enumerate}
+
+\chapter{Overall Description}
+This section does not describe specific requirements, but puts the product into perspective and provides a background for specifying concrete requirements in the next section of this document.
+
+\section{Product perspective}
+The software product is a complete self-contained system and it is not part of any other larger system.
+
+\subsection{System interfaces}
+The software product does not provide any external interface.
+
+\subsection{User interfaces}
+The software product will present the following page layouts as the user interface. First of all, there's the \textbf{landing page}:
+\putimg{landing}{0.4}
+from where the user can either:
+\begin{itemize}
+  \item \textbf{Log in}:
+  \putimg{login}{0.4}
+  where both the customers and the employee will use their data to log into the system. If it is a customer, this is the page that will be offered:
+  \putimg{customer}{0.4}
+  while if it is an employee:
+  \putimg{employee}{0.4}
+  \item \textbf{sign up}:
+  \putimg{signup}{0.4}
+  where in this first solution of the problem both the employees and the customers may join the system; a future upgrade could add an administration page where an ``admin'' will be able to manage the user and the employees. After signing up, we suppose that the user has still to log into the system.
+  \item \textbf{list all the packages}:
+  \putimg{packages}{0.4}
+  where all the packages are listed; searching for a specific page (indexed by the name and by the components) will only show the packages satisfying the search query. Clicking on the name of a package will show the details of such package:
+  \putimg{package}{0.4}
+  where the user could click on any of the elements to have a description, for example:
+  \putimg{flight}{0.4}
+  If the user wants to customize the package, it will first be asked to log into the system if it isn't already logged in; two situation arises:
+  \begin{itemize}
+    \item if the system recognize him/her as a customer, it will ask him/her to choose some details about the package:
+    \putimg{customize}{0.4}
+    \item if the system recognize him/her as an employee, it will give the possibility to modify the elements of the package, showing the same page given when he/she is adding a package, but already filled with the details of the current package (see below for more).
+  \end{itemize}
+  \item If the user is a logged in, a link with his/her name will be showed on the menu; clicking on that voice will show the profile of the user. Also, if he/she is logged in, a \textbf{logout} voice menu is available to log out.
+  \item If the user is logged as a customer, he/she will be able to show the packages he/she has modified, and further customize them. If the departing time is passed, the travel package isn't modifiable anymore, and it is tagged as ``completed''. The list of his/her packages is exactly like the full list of packages, only that they're only the packages he/she has already customized.
+  \item If the user is logged as an employee, he/she will be able to:
+  \begin{itemize}
+    \item Add a new package:
+    \putimg{addpackage}{0.4}
+    where we suppose that all the needed component are already present in the system.
+    \item Add a new component:
+    \putimg{addcomponent}{0.4}
+    In this first approximation, a component isn't modifiable after it is inserted in the system. The data requested change as soon as the type of component is selected, and in the example we've chosen to add a hotel. It could be useful to support images in the database for hotel and such, but it isn't needed for now.
+  \end{itemize}
+  \item Check some details about the company.
+\end{itemize}
+
+\subsection{Hardware interfaces}
+The software product does not provide any hardware interface.
+
+\subsection{Software interfaces}
+To develop the system we've chosen to use:
+\begin{itemize}
+  \item \textbf{DBMS}:
+  \begin{itemize}[noitemsep]
+    \item Name: MySQL
+    \item Mnemonic: MySQL
+    \item Specification number: Community Server
+    \item Version number: 5.6.14
+    \item Source: \url{http://dev.mysql.com/downloads/mysql/}
+  \end{itemize}
+  \item \textbf{AS}:
+  \begin{itemize}[noitemsep]
+    \item Name: GlassFish Server
+    \item Mnemonic: GlassFish
+    \item Specification number: Open Source Edition
+    \item Version number: 4.0
+    \item Source: \url{https://glassfish.java.net/download.html}
+  \end{itemize}
+  \item \textbf{Operating System}: The software product will run in any operating that supports the Java virtual machine and the DBMS and application server described above.
+\end{itemize}
+
+\subsection{Communications interfaces}
+\begin{center}
+  \begin{tabular}{ | c | c | c |}
+    \hline
+    Protocol & Port & Service \\ \hline
+    TCP & 80 & TCP \\ \hline
+    TCP & 3306 & MySQL \\
+    \hline
+  \end{tabular}
+\end{center}
+For the first release of the software product we will assume that the DBMS and the AS run both on the same physical server.
+
+\subsection{Memory}
+The minimum memory requirements are:
+\begin{itemize}[noitemsep]
+  \item primary memory: 2 GB;
+  \item secondary memory: 40 GB.
+\end{itemize}
+
+\subsection{Operations}
+A user can interact with the system as a functional user (anonymous or unregistered, registered customer or employee). For all the users, their functional operations are described in the product functions section.
+
+\subsection{Site adaptation requirements}
+The software product requires the following in order to run:
+\begin{itemize}[noitemsep]
+  \item Java virtual machine;
+  \item AS;
+  \item DBMS;
+  \item primary memory required space;
+  \item secondary memory required space.
+\end{itemize}
+
+Users are required to have installed any of the following web browsers:
+\begin{itemize}[noitemsep]
+  \item Internet Explorer 10.0+;
+  \item Firefox 24+;
+  \item Chrome 30+;
+  \item Safari 6.0+.
+\end{itemize}
+The behavior on previous web browser isn't well tested and can't be assessed.
+
+\section{Product functions}
+This subsection provides a summary of the major functions of the software product.
+
+\subsection{General requirements}
+We have identified 4 main general requirements:
+\begin{itemize}
+  \item managing users;
+  \item managing components;
+  \item managing packages;
+  \item managing customized packages.
+\end{itemize}
+
+The functional and non-functional requirements are defined and explained in detail in the following subsections.
+
+\subsubsection{Managing users}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR1}: Register to the system;
+    \item \textbf{FR2}: Login;
+    \item \textbf{FR3}: Logout;
+    \item \textbf{FR4}: Modify password;
+    \item \textbf{FR5}: Recover password.
+  \end{itemize}
+  \item \textbf{Non-functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{NFR1}: User password must be stored securely;
+    \item \textbf{NFR2}: System must support high number of users.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Managing components}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR1}: Add a component;
+    \item \textbf{FR2}: Remove a component;
+    \item \textbf{FR3}: Modify a component.
+    \item \textbf{FR4}: View a component.
+  \end{itemize}
+  \item \textbf{Non-functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{NFR1}: Only the employees can add, remove or modify components;
+    \item \textbf{NFR2}: System must support high number of components.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Managing packages}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR1}: Add a package;
+    \item \textbf{FR2}: Remove a package;
+    \item \textbf{FR3}: Modify a package;
+    \item \textbf{FR4}: View a package;
+    \item \textbf{FR5}: Search packages.
+  \end{itemize}
+  \item \textbf{Non-functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{NFR1}: Only the employees can add, remove or modify packages;
+    \item \textbf{NFR2}: System must support high number of packages.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Managing customized packages}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR1}: Customize a package;
+    \item \textbf{FR2}: Remove a customized package;
+    \item \textbf{FR3}: Update a customized package;
+    \item \textbf{FR4}: Search among customized packages.
+  \end{itemize}
+  \item \textbf{Non-functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{NFR1}: Only the customers can customize a package;
+    \item \textbf{NFR2}: A customized package of a customer is modifiable only by that single user, not even by the employees;
+    \item \textbf{NFR3}: Travel packages in the past (that is: where the departing date is before the actual date) must be tagged as ``completed'';
+    \item \textbf{NFR4}: System must support high number of customized packages.
+  \end{itemize}
+\end{itemize}
+
+\section{User characteristics}
+Intended users are divided among two groups:
+\begin{itemize}[noitemsep]
+  \item the customers, that are any kind of user that is willing to travel;
+  \item the employees, that are actually employees of the company.
+\end{itemize}
+Both of these two classes of users must still have:
+\begin{itemize}[noitemsep]
+  \item knowledge in using a browser.
+\end{itemize}
+
+\section{Constraints}
+The following constraints apply to the software product:
+\begin{itemize}
+  \item \textbf{Regulatory policies}: the software product does not have to meet any regulatory policies.
+  \item \textbf{Hardware limitations}: the software product does not have any hardware limitations.
+  \item \textbf{Interfaces to other applications}: the software product does not interface to other applications.
+  \item \textbf{Parallel operation}: the software product must support the operation of simultaneous users specially when working with the adding of packages, modifications of these, and so on.
+  \item \textbf{Audit functions}: the software product does not perform any audit.
+  \item \textbf{Control functions}: the software product does not control any device or any other system.
+  \item \textbf{Higher-order language requirements}: the software product requires basic knowledge of HTML, Java and JEE technologies.
+  \item \textbf{Signal handshake protocols}: the software product does not manage any handshake protocol.
+  \item \textbf{Reliability requirements}: the software product does not require any specific requirements to perform and maintain its functions under normal operation.
+  \item \textbf{Criticality of the application}: the software product requires proper support for concurrent users.
+  \item \textbf{Safety and security considerations}: the software product does not require any safety and security considerations (only the users passwords must be saved in a safely way if possible).
+\end{itemize}
+
+\section{Assumptions and Dependencies}
+The requirements in this document are grounded on the following assumptions:
+\begin{enumerate}[noitemsep]
+  \item The Java virtual machine is already installed on the OS.
+  \item Users have a decent and acceptable Internet connection.
+  \item The software product provides one employee user by default.
+  \item The software product supports any number of employees and customers.
+\end{enumerate}
+
+\section{Apportioning of requirements}
+Future releases of the software product may provide support for:
+\begin{enumerate}[noitemsep]
+  \item Friendship among users.
+  \item Sharing of packages among users
+  \item An administrator to handle the errors, with access to everything.
+  \item Logging and auditiong of operations.
+\end{enumerate}
+
+\chapter{Specific Requirements}
+
+\section{External Interface Requirements}
+
+\subsection{User Interfaces}
+The user interface is the website described in the previous chapter.
+
+\subsection{Hardware Interfaces}
+The software product does not provide any hardware interfaces.
+
+\subsection{Software Interfaces}
+The software product does not provide any software interfaces.
+
+\subsection{Communication Interfaces}
+The software product does not provide any communications interfaces.
+
+\section{Functional Requirements}
+
+\subsection{Scenarios}
+
+\subsubsection{Unregistered user search for a package}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Unregistered user search for a package} \\ \hline
+    Code & SCS001 \\ \hline
+    Description & Describing how the unregistered user search for a package \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G1}: Allow people to search for packages \\ \hline
+    \multirow{1}{*}{Assumption} & User is not registered \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Alfonso is willing to spend the Christmas holiday abroad in Paris, and has just heard about this new company called TravelDream. He then decides to check the database of such company and search for an interesting travel package.\newline
+        
+        He then:
+      \begin{enumerate}[noitemsep]
+        \item He connects to the Internet, and opens a web browser installed on his computer.
+        \item He then inserts the URL of the website of the company.
+        \item As suggested by the landing page, he goes to the packages list.
+        \item He then search for ``Paris'', and checks the ``Milan-Paris 5d'' travel package.
+        \item Interested by the offering and the price, goes on and joins the website.
+      \end{enumerate}}}
+      \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsubsection{Customer registration in the system}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Customer registration in the system} \\ \hline
+    Code & SCS002 \\ \hline
+    Description & Describing how a customer registers in the system \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G2}: People can join the system as customers \\ \hline
+    \multirow{3}{*}{Assumption} & User is not registered \\
+    & The user is already on the landing page of the website \\
+    & There's a database with the names of the employees \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Alfonso has discovered this cool website of this great travel agency called TravelDream. He wants to join it to be able to buy some travel package.\newline
+        
+        He then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``Sign Up''.
+          \item He then chooses a user name and a password, and then insert his real name, the email address and his credit card information. He also choose to be registered as a customer. He could choose to be registered as an employee, but we could check that his name isn't in our database.
+          \item He then saves his data clicking on the button ``Save''.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+    
+\subsubsection{Employee registration in the system}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Employee registration in the system} \\ \hline
+    Code & SCS003 \\ \hline
+    Description & Describing how an employee registers in the system \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G3}: Employees can join the system \\ \hline
+    \multirow{3}{*}{Assumption} & User is not registered \\
+    & The user is already on the landing page of the website \\
+    & There's a database with the names of the employees \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Bianca has just been hired to work on the TravelDream company, and they've requested her to create her own profile on the website of the company.\newline
+        
+        She then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``Sign Up''.
+          \item She then chooses a user name and a password, and then insert her real name and the email address, and chooses to be registered as an employee.
+          \item She then saves his data clicking on the button ``Save''.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+    
+\subsubsection{User logs into the system}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{User logs into the system} \\ \hline
+    Code & SCS004 \\ \hline
+    Description & Describing how an user logs into the system \\ \hline
+    \multirow{2}{*}{Goal} & \textbf{G2}: People can join the system as customers \\
+    & \textbf{G3}: Employees can join the system \\ \hline
+    \multirow{2}{*}{Assumption} & User is registered \\
+    & The user is already on the landing page of the website \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Alfonso wants to log into the system to check its personal information.\newline
+        
+        He then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``Login''.
+          \item He then write his user name and password in the form, or he can decide to recover his password if he doesn't remember it.
+          \item As he log into the system, he has now the possibility to check his personal information and his travel packages.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+    
+    \subsubsection{User change his/her data}
+    \begin{center}
+      \begin{tabular}{ | l | l |}
+        \hline
+        \multicolumn{2}{ |c| }{User change his/her data} \\ \hline
+        Code & SCS005 \\ \hline
+        Description & Describing how an user can change his/her data on the system \\ \hline
+        \multirow{2}{*}{Goal} & \textbf{G2}: People can join the system as customers \\
+        & \textbf{G3}: Employees can join the system \\ \hline
+        \multirow{2}{*}{Assumption} & User is registered and logged \\
+        & The user is already on the landing page of the website \\ \hline
+        \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+            \vspace*{\baselineskip}
+            Alfonso wants to change his password and email on the system.\newline
+            
+            He then:
+            \begin{enumerate}[noitemsep]
+              \item Follows the link on the left menu which says his name, ``Alfonso B.''.
+              \item He then modify the informations about himself he wants to modify, and presses the save button.
+            \end{enumerate}}}
+            \\ \hline
+          \end{tabular}
+        \end{center}
+
+\subsubsection{Employee adds a component}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Employee adds a component} \\ \hline
+    Code & SCS006 \\ \hline
+    Description & Describing how an employee can add a new component to the system \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G4}: Employees can add/remove/modify basic components \\ \hline
+    \multirow{2}{*}{Assumption} & Employee is registered and logged \\
+    & The user is already on the landing page of the website \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Bianca wants to add a new hotel in Paris that has just accepted to be part of the TravelDream company system.
+        
+        She then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``Add Component''.
+          \item She insert all the informations about the hotel: the location, the description, the price per night and person, and so on. She then presses the save button.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+    
+\subsubsection{Employee modify a component}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Employee modify a component} \\ \hline
+    Code & SCS007 \\ \hline
+    Description & Describing how an employee can modify a component \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G4}: Employees can add/remove/modify basic components \\ \hline
+    \multirow{2}{*}{Assumption} & Employee is registered and logged \\
+    & The user is already on the landing page of the website \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Bianca wants to modify the informations about the hotel ``Albergo Miramare'' in Rimini.
+        
+        She then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``The Components''.
+          \item She search for the component writing into the search bar ``Miramare'', and clicks on search.
+          \item Among the results, she clicks on the element she was looking for.
+          \item She modify the data of that component and presses the ``Save'' button afterwards, or she could even remove it if needed.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+
+\subsubsection{Employee adds a package}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Employee adds a package} \\ \hline
+    Code & SCS008 \\ \hline
+    Description & Describing how an employee can add a new package to the system \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G5}: Employees can add/remove/modify travel packages \\ \hline
+    \multirow{2}{*}{Assumption} & Employee is registered and logged \\
+    & The user is already on the landing page of the website \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Bianca wants to add a new travel package with some excursions and travels means to Paris.
+        
+        She then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``Add Package''.
+          \item She insert all the informations about the package: the name, the days, and so on.
+          \item Then she adds all the components of the package: the flights, the excursions, the hotel, and so on. The price will be determined by the sum of all the prices of the components, plus a percentage defined by her for the company profit.
+          \item She then presses the save button.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+    
+\subsubsection{Employee modify a package}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Employee modify a package} \\ \hline
+    Code & SCS009 \\ \hline
+    Description & Describing how an employee can modify a package \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G5}: Employees can add/remove/modify travel packages \\ \hline
+    \multirow{2}{*}{Assumption} & Employee is registered and logged \\
+    & The user is already on the landing page of the website \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Bianca wants to modify the informations about a travel package for Rimini.
+        
+        She then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``The Packages''.
+          \item She search for the component writing into the search bar ``Rimini'', and clicks on search.
+          \item Among the results, she clicks on the element she was looking for.
+          \item She modify the data of that package and presses the ``Save'' button, or she could even remove it if needed.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+    
+    
+\subsubsection{Customer customize a package}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Customer customize a package} \\ \hline
+    Code & SCS010 \\ \hline
+    Description & Describing how a customer can customize a package \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G6}: Customer can customize packages \\ \hline
+    \multirow{2}{*}{Assumption} & Customer is registered and logged \\
+    & The user is already on the landing page of the website \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Alfonso has just finished registering in the website and is now able to look for the travel package to ``Paris'' we wants to buy.
+        
+        He then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``The Packages''.
+          \item He search for the package writing into the search bar ``Paris'', and clicks on search.
+          \item Among the results, he clicks on the element he was looking for.
+          \item In the page with the information about the package, he could either check the information about the single component of the package (by pressing on the name of such element), or he could go on with the customization process pressing the ``Customize'' button.
+          \item In the customization page, he can now choose when we wants to leave and return, and when to go to the excursions. The price will be updated with each modification he does.
+          \item He modify the data of that package and presses the ``Save'' button.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+    
+\subsubsection{Customer modify a customized package}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{Customer modify a customized package} \\ \hline
+    Code & SCS011 \\ \hline
+    Description & Describing how a customer can modify a customized package \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G6}: Customer can customize packages \\ \hline
+    \multirow{2}{*}{Assumption} & Customer is registered and logged \\
+    & The user is already on the landing page of the website \\ \hline
+    \multicolumn{2}{ |l| }{\parbox{\textwidth}{
+        \vspace*{\baselineskip}
+        Alfonso has just discovered that he cannot return the 3rd of January because he has to go back working that same day. He then decides to modify the travel package.
+        
+        He then:
+        \begin{enumerate}[noitemsep]
+          \item Follows the link on the left menu which says ``My Packages''.
+          \item He clicks on his only package bought, the travel package to Paris.
+          \item In the page with the information about the package, he modifies the returning date. A fee is applied for the modification, but he also will get a refund for the days he's not spending anymore in the hotel.
+          \item He modify the data of that package and presses the ``Save'' button.
+        \end{enumerate}}}
+        \\ \hline
+      \end{tabular}
+    \end{center}
+
+\subsection{Analysis model}
+The analysis model represents the core concepts; the following diagram introduces the conceptual classes that we have decided to include in the software product.
+\putimg{analysis-model}{0.4}
+
+\subsection{Activity model}
+Since the main goal of the software product is to create a customized package, below we introduce the activity diagram for doing so.
+\putimg{activity-model}{0.3}
+
+\subsection{Use case model}
+The use cases presented are divided by \textbf{actors}, that in our system are:
+\begin{itemize}[noitemsep]
+  \item \textbf{unregistered users};
+  \item \textbf{customers};
+  \item \textbf{employees}.
+\end{itemize}
+
+\subsubsection{Unregistered user}
+The unregistered user can search the entire network without being registered or can register into the system.
+\putimg{uc-unregistered}{0.4}
+
+\begin{itemize}
+  \item Searching:
+\begin{center}
+  \begin{tabular}{ | l | p{10cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{Searching} \\ \hline
+    Code & USC001 \\ \hline
+    Description & Unregistered user searches for a package \\ \hline
+    \multirow{1}{*}{Goal} & \textbf{G1}: Allow people to search for packages \\ \hline
+    \multirow{1}{*}{Assumptions} & \\ \hline
+    Actors & Unregistered user \\ \hline
+    Entry condition & The unregistered user navigates to the homepage of TravelDream \\ \hline
+    Exit condition & The list compliant to the search is displayed to the unregistered user \\ \hline
+    \multicolumn{2}{ |c| }{Flow of events} \\ \hline
+    \multicolumn{2}{ |l| }{ \parbox{0.9\textwidth}{
+        \begin{enumerate}
+          \item The unregistered user navigates to the homepage of TravelDream
+          \item The unregistered user inputs in the search box the package he/she is looking for
+          \item The system provides him/her with the search results matching with the travel packages with the name containing the query, or with a component with the name containing the query.
+          \item The unregistered user clicks on a result, and reads the details about the offering.
+        \end{enumerate}
+        }  } \\ \hline
+    Exceptions & \\ \hline
+    Special requirements & \\ \hline
+    Nonfunctional requirements & \\ \hline
+      \end{tabular}
+    \end{center}
+\end{itemize}
+
+\subsubsection{Customers}
+The customers can search the entire network, log into the system, customize a package, and modify a customized package.
+\putimg{uc-customer}{0.4}
+
+\subsubsection{Employees}
+The employees can search the entire network, log into the system, add/remove/modify a package, and add/remove/modify a component.
+\putimg{uc-employee}{0.4}
+
+\section{Performance Requirements}
+The software product requires that every web page shall download in 15 seconds or less.
+
+\section{Design Constraints}
+The software product must be designed and implemented with JEE technologies, in particular EJBs for the business logic.
+
+\section{Software System Attributes}
+
+\subsection{Reliability}
+The software product does not any reliability factors because in case of malfunction it will cause minor inconveniences.
+
+\subsection{Availability}
+The system shall be available 24 hours per day, 365 days per year.
+
+\subsection{Security}
+The software product must provide secure storage of the passwords of its users. This can be achieved by using any cryptographic techniques.
+
+\subsection{Maintainability}
+The database must be backed up periodically, so that new connection and skill data is not lost in case of malfunction.
+
+\subsection{Portability}
+The software product can be installed in any operating system that supports the Java virtual machine and its dependent components.
+
+\section{Other Requirements}
+The software product must provide understandable messages in text form in the event of errors, and instruct the user on what to do.
+
+
+\end{document}
