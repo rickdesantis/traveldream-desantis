@@ -1,0 +1,1153 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{fancyvrb}
+\usepackage{eurosym}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{multirow}
+\usepackage[font={footnotesize,it}]{caption}
+
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.5}
+
+\usepackage[margin=0.7in]{geometry}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=trbl,
+  %xleftmargin=\parindent,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  %identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  numbers=left,
+  tabsize=2,
+  frameround=tttt,
+  numberstyle=\footnotesize\ttfamily,
+  xrightmargin=50pt,
+  xleftmargin=50pt,
+  escapeinside={(*@}{@*)},
+  morekeywords={pipe,module,in,out},
+}
+\lstset{escapechar=@,style=customc}
+
+\usepackage{ifpdf}
+\ifpdf
+    \usepackage[pdftex]{graphicx}   % to include graphics
+    \pdfcompresslevel=9
+    \usepackage[pdftex,     % sets up hyperref to use pdftex driver
+            plainpages=false,   % allows page i and 1 to exist in the same document
+            breaklinks=true,    % link texts can be broken at the end of line
+            colorlinks=true,
+            pdftitle={DD for the TravelDream Project}
+            pdfauthor={Riccardo B. Desantis}
+           ]{hyperref}
+    \usepackage{thumbpdf}
+\else
+    \usepackage{graphicx}       % to include graphics
+    \usepackage{hyperref}       % to simplify the use of \href
+\fi
+
+\graphicspath{{images/}}
+
+\newcommand{\insimg}[3]{
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[scale=#3]{#1}
+    \end{center}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}
+}
+
+\newcommand{\putimg}[2]{
+  \begin{center}
+    \includegraphics[scale=#2]{#1}
+  \end{center}
+}
+
+\newenvironment{sistema}%
+{\left\lbrace\begin{array}{@{}l@{}}}%
+  {\end{array}\right.}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+
+\newcommand{\italiano}[1]{%
+  \begin{otherlanguage*}{italian}#1\end{otherlanguage*}}
+
+\lstnewenvironment{code}[1][]{ %
+  \lstset{ %
+    mathescape,
+    numbers=none,
+    frame=none,
+    basicstyle=\normalsize\ttfamily,
+    xleftmargin=2em,
+    #1
+  }}%
+  {}
+
+\newcommand{\linecode}[2]{ %
+  \lstinline[mathescape,#2]|#1|}
+
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+%\usepackage{marvosym}
+% \DeclareUnicodeCharacter{1e25}{\DOTH{}}
+
+
+\begin{document}
+
+\title{\textbf{TravelDream Project}}
+\author{\textbf{Design Document}}
+\date{Riccardo B. Desantis - matr. 765106}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{Purpose}
+This document describes the general and specific architecture of the e-commerce system, called \textbf{TravelDream}, that is being developed for the TravelDream company to support its sale process.
+
+This document will explain the architectural decisions and tradeoffs chosen in the design process and their justification.
+
+\section{Scope}
+The architectural descriptions provided concern the functional view, module view, deployment view, data layer, business logic and the user interface of the RASD. Hence the architecture will consider the following functionalities that TravelDream is going to handle:
+\begin{itemize}
+  \item \textbf{Profiles}: TravelDream will manage personal data of the different types of users. Users can be customers, registered customers and employees.
+  \item \textbf{Users}: TravelDream will manage registering, logging in/out of users.
+  \item \textbf{Basic Components}: TravelDream will manage the list of basic component of which the travel packages are made of.
+  \item \textbf{Travel Packages}: TravelDream will manage the list of travel packages that customers might buy.
+  \item \textbf{Customized Travel Packages}: TravelDream will manage the list of travel packages that the customers have customized.
+\end{itemize}
+
+\section{Definitions, acronyms, abbreviations}
+
+\subsection{Definitions}
+Here are the definitions of the terms used:
+\begin{itemize}
+  \item \textbf{Customer}: a customer of the company, a person willing to buy a travel package.
+  \item \textbf{Registered Customer}: a registered customer in our system, that is a person which entered his/her data in our system.
+  \item \textbf{Employee}: an employee of the TravelDream company.
+  \item \textbf{Basic Components}: one of these elements:
+  \begin{itemize}
+    \item a flight;
+    \item a car rental;
+    \item a train;
+    \item a hotel;
+    \item an excursion.
+  \end{itemize}
+  \item \textbf{Travel Package}: a package composed of some basic products, created by an employee. We can assume that it can only be created or removed.
+  \item \textbf{Customized Travel Package}: a travel package modified by a customer, with a specific flight (e.g., with a departing and returning date) etc.
+\end{itemize}
+
+\subsection{Acronyms and abbreviations}
+The acronyms and abbreviations used are:
+\begin{itemize}
+  \item \textbf{XML}: Extensible Markup Language.
+  \item \textbf{XHTML}: Extensible HyperText Markup Language.
+  \item \textbf{RASD}: Requirements Analysis and Specification Document.
+  \item \textbf{QA}: Quality Attributes.
+  \item \textbf{G}: Goal.
+  \item \textbf{DBMS}: Database Management System.
+  \item \textbf{RDBMS}: Relational Database Management System.
+  \item \textbf{AS}: Application Server.
+  \item \textbf{JEE}: Java Enterprise Edition.
+  \item \textbf{EJB}: Enterprise Java Beans.
+  \item \textbf{FR}: Functional Requirement.
+  \item \textbf{NFR}: Non-functional Requirement.
+  \item \textbf{QoS}: Quality of Service.
+  \item \textbf{ER}: Entity Relationship.
+  \item \textbf{LD}: Logical Design.
+  \item \textbf{JAAS}: Java Authentication and Authorization Service.
+\end{itemize}
+
+\section{Reference documents}
+The documents used for the writing of this RASD are:
+\begin{enumerate}
+  \item Analysis document: rasd.pdf;
+  \item IEEE Standard for Information Technology-Systems Design-Software Design Description: \url{http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5167255}.
+\end{enumerate}
+
+\section{Overview}
+This document specifies the architecture of TravelDream spreading from the general into the specific. The design was guided by a top-down process approach and the document structure reflects this tactic.
+
+This document is organized as follows:
+\begin{enumerate}
+  \item \textbf{Introduction}: provides a synopsis of the architectural descriptions.
+  \item \textbf{Design Overview}: provides a general description of TravelDream including its functionality and matters related to the overall system and its design.
+  \item \textbf{Design Considerations}: describes the design assumptions and constrains of TravelDream.
+  \item \textbf{Software Architecture}: specifies the general architecture, describes the basic structure and interactions of the main subsystems.
+  \item \textbf{Detailed System Design}: specifies in detail the components of the system through different architectural views.
+  \item \textbf{Appendixes}: provides supporting information and additional material.
+\end{enumerate}
+
+\chapter{Design Overview}
+This section provides a general description of the software system including its functionality and concerns related to the overall system and its design.
+
+\section{Design context}
+The design context sets the limits for the system design, considering the functional and technological context.
+
+\subsection{Functionalities}
+The following functional requirements were identified during RASD. These functionalities are grouped by the following functional areas:
+
+\subsubsection{Managing profiles}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR1}: View personal information;
+    \item \textbf{FR2}: Modify personal information;
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Managing users}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR3}: Register to the system;
+    \item \textbf{FR4}: Login;
+    \item \textbf{FR5}: Logout;
+    \item \textbf{FR6}: Modify password;
+    \item \textbf{FR7}: Recover password.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Managing components}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR8}: Add a component;
+    \item \textbf{FR9}: Remove a component;
+    \item \textbf{FR10}: Modify a component.
+    \item \textbf{FR11}: View a component.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Managing packages}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR12}: Add a package;
+    \item \textbf{FR13}: Remove a package;
+    \item \textbf{FR14}: Modify a package;
+    \item \textbf{FR15}: View a package;
+    \item \textbf{FR16}: Search packages.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Managing customized packages}
+\begin{itemize}
+  \item \textbf{Functional requirements}:
+  \begin{itemize}[noitemsep]
+    \item \textbf{FR17}: Customize a package;
+    \item \textbf{FR18}: Remove a customized package;
+    \item \textbf{FR19}: Update a customized package;
+    \item \textbf{FR20}: Search among customized packages.
+  \end{itemize}
+\end{itemize}
+
+\subsection{System technologies}
+The TravelDream project will be designed considering the \textbf{client-server 3-tier distributed architectural style}. Each tier requires specific technologies as depicted below:
+\begin{itemize}
+  \item \textbf{Web tier}:
+  \begin{itemize}
+    \item Dynamic web pages containing XHTML, which are generated by web components.
+    \item Web components developed with Java Server Faces technology, which is a user interface component framework for web applications.
+  \end{itemize}
+  \item \textbf{Business Logic tier}:
+  \begin{itemize}
+    \item Java Enterprise Edition (JEE) 7 platform supports applications that provide enterprise services in the Java language. It is the common foundation for the various kinds of components in Java.
+    \item Enterprise Java Beans (EJB) 3.1, business components that capture the logic that solves or meets the needs of a particular business domain and persistence entities.
+    \item GlassFish AS 4.0, a server that provides services such as security, data services, transaction support, load balancing, and management of distributed applications, which supports the JEE7 platform.
+  \end{itemize}
+  \item \textbf{Persistence tier}:
+  \begin{itemize}
+    \item MySQL Server 5.6.14, a RDBMS.
+  \end{itemize}
+\end{itemize}
+
+\section{General design description}
+This subsection presents the roadmap followed to model the architecture of TravelDream, including its functionality and matters related to the overall system and its design.
+
+\subsection{Design approach}
+The design approach is based on a client-server 3-tier distributed system, where each tier is described as follows:
+\begin{itemize}
+  \item \textbf{Client tier}: this tier is responsible of translating user actions and presenting the output of tasks and results into something the user can understand.
+  \item \textbf{Business Logic tier}: this tier coordinates the application, processes commands, makes logical decisions and evaluations, and performs calculations. It also moves and processes data between the client and persistence tiers.
+  \item \textbf{Persistence tier}: this tier holds the information of the system data model, and is in charge of storing and retrieving information from a database.
+\end{itemize}
+
+The design process followed a top-down process approach, so the outermost tiers were first identified and then broken into components that encapsulate the functionality. Hence each component is responsible for certain functionalities and interacts with others.
+
+\subsection{Overall design}
+This subsection presents the design model of TravelDream, specifying the basic relations between packages, use cases and users.
+
+\subsubsection{General package design}
+Since each tier is broken into components and each component is responsible for a set of functionalities that fulfill the requirements, there is a correlation between use cases (functionality) and package design. In the diagram in figure~\ref{fig:basic-package} we can identify three packages:
+\begin{itemize}
+  \item \textbf{User UI}: this package contains the user interfaces. It is responsible for the interaction with the user such as getting UI requests, referring them to the Business Logic package and retrieving the data back for displaying.
+  \item \textbf{Business Logic}: this package contains the business logic components. This package is responsible for handling the User UI package requests, processing them and accessing the Persistence package if required to provide a response.
+  \item \textbf{Persistence}: this package is responsible for managing the data requests from the Business Logic package.
+\end{itemize}
+Employees, Registered and Unregistered customers access directly the User UI package and submit requests to accomplish their tasks.
+
+\insimg{basic-package}{Basic package diagram.}{0.4}
+
+\subsubsection{Detailed package design}
+Given the functional requirements identified we can encapsulate them within specific components in the package diagram as follows:
+\begin{itemize}
+  \item \textbf{User UI}: these set of sub packages are responsible for encapsulating the user actions and forwarding information requests to the Business Logic sub packages.
+  \begin{itemize}
+    \item Profile pages: this package implements \textbf{FR1}, \textbf{FR2};
+    \item User pages: this package implements \textbf{FR3}, \dots, \textbf{FR7};
+    \item Components pages: this package implements \textbf{FR8}, \dots, \textbf{FR11};
+    \item Packages pages: this package implements \textbf{FR12}, \dots, \textbf{FR16};
+    \item Custom packages pages: this package implements \textbf{FR17}, \dots, \textbf{FR20}.
+  \end{itemize}
+  \item \textbf{Business Logic}: these set of sub packages are responsible for handling requests from the User UI package, processing them and send back a response. These packages may access the Persistence package.
+  \begin{itemize}
+    \item User manager: this package implements \textbf{FR1}, \textbf{FR3}, \dots, \textbf{FR7};
+    \item Nomen manager: this package implements \textbf{FR2}, \textbf{FR4};
+    \item Component manager: this package implements \textbf{FR8}, \dots, \textbf{FR11};
+    \item Package manager: this package implements \textbf{FR12}, \dots, \textbf{FR16};
+    \item Custom package manager: this package implements \textbf{FR17}, \dots, \textbf{FR20}.
+  \end{itemize}
+  \item \textbf{Persistence}: this sub package contains the data model for the system. It accepts requests from the Business Logic package.
+  \begin{itemize}
+    \item Entity manager: this package implements \textbf{F1}, \dots, \textbf{F20}.
+  \end{itemize}
+\end{itemize}
+
+\insimg{detailed-package}{Detailed package diagram.}{0.4}
+
+\chapter{Design Consideration}
+
+\section{Assumptions}
+
+\begin{center}
+  \begin{tabular}{ | p{5cm} | p{10cm} | }
+    \hline
+    \textbf{Assumption} & \textbf{Action} \\ \hline
+    All the employees are administrators of the system. & At least one employee is registered at all times. \\ \hline
+  \end{tabular}
+\end{center}
+
+\section{Dependencies}
+\begin{center}
+  \begin{tabular}{ | p{5cm} | p{10cm} | }
+    \hline
+    \textbf{Dependency} & \textbf{Impact} \\ \hline
+    Java virtual machine that supports JEE7 is already installed on the OS. & TravelDream only runs on operating systems that support the JEE7 platform. \\ \hline
+    the supported browsers will be Chrome and Safari. & TravelDream outputs XHTML code that requires browsers that support most of the web standards, elsewhere the UI experience will be affected. \\ \hline
+    A JEE7 AS is required on the server side. & TravelDream cannot operate if there is no AS that supports the JEE7 standard. \\ \hline
+  \end{tabular}
+\end{center}
+
+\section{General constraints}
+This subsection describes the NFRs and the QoS details related to the design of the software product.
+
+\begin{center}
+  \begin{tabular}{ | p{5cm} | p{10cm} | }
+    \hline
+    \textbf{Element} & \textbf{Requirement} \\ \hline
+    Memory & 2+ GB \\ \hline
+    Database server & MySQL \\ \hline
+    Network & Internet Access, HTTP protocol \\ \hline
+    Security & The software product is controlled for each type of user. SSL is not supported. \\ \hline
+    Hard disk space & 40+ GB \\ \hline
+  \end{tabular}
+\end{center}
+
+\section{Performance requirements}
+
+\subsection{Standard compliance}
+The software product does not have to meet any standard compliance.
+
+\subsection{Reliability}
+For assuring the reliability of the software product, it is mandatory to back up the database periodically.
+
+\subsection{Availability}
+An AS is used to guarantee availability of the software product. However in order to eliminate the downtime cause by the dependency on a single point of failure redundancy in the AS instances is recommended. For the first release of the software product we will assume that all the tiers run on the same physical server.
+
+\subsection{Security}
+The software product does not support SSL in AS. It supports the hashing of the user password according to sha1 algorithm in the database. It supports authorization according JAAS.
+
+\subsection{Maintainability}
+The architectural style and the component definition described contribute to low coupling and high cohesion of the software product.
+
+\subsection{Portability}
+The software product has been developed using the Java language and related dependent technologies. Java is specifically designed to have as few implementation dependencies as possible, meaning that code that runs on one platform does not need to be recompiled to run on another.
+
+\chapter{Software Architecture}
+TravelDream shall be developed by using a general 3-tier JEE Architecture, as mentioned in section 2.2. We have conceptually identified the components of each, by dividing them in tiers which represent logically a clearer view of what each of them is responsible of. Section 4.1 gives a general description of the architecture we propose for our system and furthermore it provides a small description for each of the components. Detailed description is found in section 5. Detailed software design. Hereby we need to clarify that:
+\begin{itemize}
+  \item Client Tier and Web Tier represent the Web Component;
+  \item Business Logic Tier represents the Business Logic component;
+  \item Persistence Tier represents Persistence Component;
+  \item Database represents the data model.
+\end{itemize}
+
+\section{Conceptual design}
+\insimg{architecture}{General architecture design.}{0.3}
+
+The diagram in fig.~\ref{fig:architecture} represents our conceptual design of TravelDream. This diagram depicts all the components of the designed software, by clarifying the logical separation between the tiers. It is clear that the user will interact with the XHTML pages, which in their side are implemented with beans to manage user interaction. This web interaction is then supported by the business tier, which holds on the information provided by the persistence layer. The persistence layer is the one in charge of the connection to the database and managing all the queries needed from the above layers.
+
+Further explanation on the technologies used is found in section 4.2.
+
+\subsection{Client tier}
+The client tier is composed of the XHTML pages that the users will see. Actually this is strictly related to the Web Tier, and in section 5 it is detailed together with the Web Tier.
+
+\subsection{Web tier}
+Web Tier is composed of the web beans. This tier receives the requests of the user and has some specific beans which listen to these events and display data regarding the user requests. They interact with the beans in Business Tier, to retrieve the information. Since we are using JSF these beans are called Managed Beans.
+
+\subsection{Business logic tier}
+The business logic tier is composed of all the logic underlying our application; it is responsible of communication with Web Tier and Persistence Tier. Its components are the EJB Beans, named as Managers in section 5.1, just to differentiate from the web beans.
+
+\subsection{Persistence tier}
+The persistence tier is composed of the entity beans which represent the entities depicted from our RASD document and then further endorsed in our conceptual design. These entities are fundamental as they represent the connection to our database. Since in JEE we are interested in working in an object oriented environment, they represent a high level object view of the database of the application, which from its side connects to the Database Tier, to insert, update, delete, select.
+
+\subsection{Database}
+The database is composed of the tables composing the database we generated based on our assumptions and needs of the project.
+
+\section{System specification}
+The following table displays the technologies we will use during implementation. All of the technologies are free open source technologies.
+\begin{center}
+  \begin{tabular}{ | p{5cm} | p{10cm} | }
+    \hline
+    \textbf{Component Name} & \textbf{Technology} \\ \hline
+    Client Tier & \multirow{2}{*}{XHTML integrated with Java Server Faces.} \\
+    Web Tier & \\ \hline
+    Business Tier & JEE with the AS GlassFish 4.0. \\ \hline
+    Persistence Tier & \multirow{2}{*}{MySQL 5.6} \\
+    Database Tier & \\ \hline
+  \end{tabular}
+\end{center}
+
+\chapter{Detailed Software Design}
+In this section we provide detailed insight into product structure and (intended) implementation regarding the general structure already detailed in section 4.1. We are releasing some of components from some implementation details since we are not very confident in JEE. In the following sections we have provided details about the general subcomponents, which are object of change in the further phase.
+
+\section{Implementation modules/components}
+Our project is composed of 3 main components, which shall be implemented during implementation phase:
+\begin{itemize}
+  \item \textbf{Web component};
+  \item \textbf{Business logic component};
+  \item \textbf{Persistence component}.
+\end{itemize}
+
+\subsection{Web component}
+In this section we provide the useful information for what needs to be implemented regarding this component. The following general diagram shows the subcomponents and their communication.
+
+We have identified 4 main Subcomponents and their related Managed Beans:
+\begin{itemize}
+  \item Profile pages,
+  \item User pages,
+  \item Component pages,
+  \item Packages pages,
+  \item Custom package pages.
+\end{itemize}
+We hereby remind that we are using JSF and that user events in the pages are managed by Managed Beans divided in 4 sections as well. The related beans Managed Beans are:
+\begin{itemize}
+  \item ProfileManagedBeans,
+  \item UserManagedBeans,
+  \item ComponentManagedBeans,
+  \item PackageManagedBeans,
+  \item CustomPackageManagedBeans.
+\end{itemize}
+
+These beans represent the conceptual idea of the Managed Beans, as there will be more managed beans that will be needed during implementation.
+
+\insimg{web-tier}{Web tier components.}{0.5}
+
+\subsubsection{Profile pages and managed beans}
+Pages and beans in this section are responsible for everything related to the profiles.
+
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{profile.xhtml} \\ \hline
+    Definition & User interface for displaying user profile information. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display profile information.
+        \item Allow modification to the profile.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{ProfileBean} \\ \hline
+    Definition & Managed bean for displaying user profile information. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Load profile information based on the user.
+        \item Handle modification to the profile.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+
+\subsubsection{User pages and managed beans}
+Pages and beans in this section are responsible for everything related to users.
+
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{register.xhtml} \\ \hline
+    Definition & User interface for user registration. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Load registration form.
+       \end{itemize}} \\ \hline
+  \end{tabular}
+\end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{login.xhtml} \\ \hline
+    Definition & User interface for user login. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display login form.
+       \end{itemize}} \\ \hline
+  \end{tabular}
+\end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{main.xhtml} \\ \hline
+    Definition & User interface for displaying the main menu for a user. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display user main homepage (according to the user role);
+        \item Display connections to Profile, Packages, Customized Packages pages.
+      \end{itemize}} \\ \hline
+  \end{tabular}
+\end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{error.xhtml} \\ \hline
+    Definition & User interface for displaying error messages. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Load type of error because of user input.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{RegisterBean} \\ \hline
+    Definition & Managed bean for user registration. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Load registration form;
+        \item Check compulsory data;
+        \item Redirect to error.xhtml or main.xhtml.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{LoginBean} \\ \hline
+      Definition & Managed bean for user login. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Load login form;
+          \item Check login credentials;
+          \item Redirect to error.xhtml or main.xhtml.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+    \begin{center}
+      \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+        \hline
+        Component Name & \textbf{MainBean} \\ \hline
+        Definition & Managed bean for displaying the main menu for a user. \\ \hline
+        Responsibilities & \parbox{0.65\textwidth}{
+          \begin{itemize}[noitemsep,leftmargin=*]
+            \item Load user main homepage (according to the user role);
+            \item Load connections to Profile, Packages, Customized Packages pages.
+          \end{itemize}} \\ \hline
+        \end{tabular}
+      \end{center}
+
+\subsubsection{Component pages and managed beans}
+Pages and beans in this section are responsible for everything related to the components.
+
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{viewcomponent.xhtml} \\ \hline
+    Definition & User interface for displaying a component. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display the details about a specific component;
+        \item Display the link to remcomponent.xhtml for removing such component if the user has the rights for doing it (e.g. is an employee).
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{addcomponent.xhtml} \\ \hline
+    Definition & User interface for adding a new component. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display the form for adding a new component;
+        \item Redirects to viewcomponent.xhtml at the end of the adding process.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{listcomponents.xhtml} \\ \hline
+    Definition & User interface for listing all the available components. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display a list of all the available components, where for each of them there's a link to the specific viewcomponent.xhtml page;
+        \item A search bar is available for finding a subset of components.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{remcomponent.xhtml} \\ \hline
+    Definition & User interface for removing a specific component. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display a confirmation form for removing a specific component;
+        \item Redirects to listcomponents.xhtml or viewcomponent.xhtml either if the component was removed or not.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{ViewComponentBean} \\ \hline
+    Definition & Managed bean for displaying a component. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Load the details about a specific component;
+        \item Load the link to remcomponent.xhtml for removing such component if the user has the rights for doing it (e.g. is an employee).
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{AddComponentBean} \\ \hline
+      Definition & Managed bean for adding a new component. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Load the form for adding a new component;
+          \item Redirects to viewcomponent.xhtml at the end of the adding process.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+    \begin{center}
+      \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+        \hline
+        Component Name & \textbf{ListComponentsBean} \\ \hline
+        Definition & Managed bean for listing all the available components. \\ \hline
+        Responsibilities & \parbox{0.65\textwidth}{
+          \begin{itemize}[noitemsep,leftmargin=*]
+            \item Load the list of all the available components, where for each of them there's a link to the specific viewcomponent.xhtml page;
+            \item Load a subset of the available components if a search query is provided.
+          \end{itemize}} \\ \hline
+        \end{tabular}
+      \end{center}
+      \begin{center}
+        \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+          \hline
+          Component Name & \textbf{RemComponentBean} \\ \hline
+          Definition & Managed bean for removing a specific component. \\ \hline
+          Responsibilities & \parbox{0.65\textwidth}{
+            \begin{itemize}[noitemsep,leftmargin=*]
+              \item Load a confirmation form for removing a specific component;
+              \item Redirects to listcomponents.xhtml or viewcomponent.xhtml either if the component was removed or not.
+            \end{itemize}} \\ \hline
+          \end{tabular}
+        \end{center}
+
+\subsubsection{Packages pages and managed beans}
+Pages and beans in this section are responsible for everything related to the packages.
+
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{viewpackage.xhtml} \\ \hline
+    Definition & User interface for displaying a package. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display the details about a specific package;
+        \item Display a list of links to viewcomponent.xhtml for each component;
+        \item Display the link to rempackage.xhtml for removing such package if the user has the rights for doing it (e.g. is an employee);
+        \item Display the link for ``buying'' and customizing this package if the user has the rights for doing it (e.g. is a registered customer).
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{addpackage.xhtml} \\ \hline
+      Definition & User interface for adding a new package. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Display the form for adding a new component;
+          \item Display a list of components that can be added, and a link to addcomponent.xhtml;
+          \item Redirects to viewpackage.xhtml at the end of the adding process.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+    \begin{center}
+      \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+        \hline
+        Component Name & \textbf{listpackages.xhtml} \\ \hline
+        Definition & User interface for listing all the available packages. \\ \hline
+        Responsibilities & \parbox{0.65\textwidth}{
+          \begin{itemize}[noitemsep,leftmargin=*]
+            \item Display a list of all the available packages, where for each of them there's a link to the specific viewpackage.xhtml page;
+            \item A search bar is available for finding a subset of packages.
+          \end{itemize}} \\ \hline
+        \end{tabular}
+      \end{center}
+      \begin{center}
+        \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+          \hline
+          Component Name & \textbf{rempackage.xhtml} \\ \hline
+          Definition & User interface for removing a specific package. \\ \hline
+          Responsibilities & \parbox{0.65\textwidth}{
+            \begin{itemize}[noitemsep,leftmargin=*]
+              \item Display a confirmation form for removing a specific package;
+              \item Redirects to listpackage.xhtml or viewpackage.xhtml either if the package was removed or not.
+            \end{itemize}} \\ \hline
+          \end{tabular}
+        \end{center}
+        \begin{center}
+          \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+            \hline
+            Component Name & \textbf{ViewPackageBean} \\ \hline
+            Definition & Managed bean for displaying a package. \\ \hline
+            Responsibilities & \parbox{0.65\textwidth}{
+              \begin{itemize}[noitemsep,leftmargin=*]
+                \item Load the details about a specific package;
+                \item Load a list of links to viewcomponent.xhtml for each component;
+                \item Load the link to rempackage.xhtml for removing such component if the user has the rights for doing it (e.g. is an employee);
+                \item Load the link for ``buying'' and customizing this package if the user has the rights for doing it (e.g. is a registered customer).
+              \end{itemize}} \\ \hline
+            \end{tabular}
+          \end{center}
+          \begin{center}
+            \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+              \hline
+              Component Name & \textbf{AddPackageBean} \\ \hline
+              Definition & Managed bean for adding a new package. \\ \hline
+              Responsibilities & \parbox{0.65\textwidth}{
+                \begin{itemize}[noitemsep,leftmargin=*]
+                  \item Load the form for adding a new package;
+                  \item Load a list of components that can be added, and a link to addcomponent.xhtml;
+                  \item Redirects to viewpackage.xhtml at the end of the adding process.
+                \end{itemize}} \\ \hline
+              \end{tabular}
+            \end{center}
+            \begin{center}
+              \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+                \hline
+                Component Name & \textbf{ListPackagesBean} \\ \hline
+                Definition & Managed bean for listing all the available packages. \\ \hline
+                Responsibilities & \parbox{0.65\textwidth}{
+                  \begin{itemize}[noitemsep,leftmargin=*]
+                    \item Load the list of all the available packages, where for each of them there's a link to the specific viewpackage.xhtml page;
+                    \item Load a subset of the available packages if a search query is provided.
+                  \end{itemize}} \\ \hline
+                \end{tabular}
+              \end{center}
+              \begin{center}
+                \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+                  \hline
+                  Component Name & \textbf{RemPackageBean} \\ \hline
+                  Definition & Managed bean for removing a specific package. \\ \hline
+                  Responsibilities & \parbox{0.65\textwidth}{
+                    \begin{itemize}[noitemsep,leftmargin=*]
+                      \item Load a confirmation form for removing a specific package;
+                      \item Redirects to listpackages.xhtml or viewpackage.xhtml either if the package was removed or not.
+                    \end{itemize}} \\ \hline
+                  \end{tabular}
+                \end{center}
+  
+\subsubsection{Custom packages pages and managed beans}
+Pages and beans in this section are responsible for everything related to the custom packages.
+
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{viewcustompkg.xhtml} \\ \hline
+    Definition & User interface for displaying a custom package. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Display the details about a specific custom package;
+        \item Display a list of links to setcomponent.xhtml for each component;
+        \item Display the link to remcustompkg.xhtml for removing such package.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{setcomponent.xhtml} \\ \hline
+      Definition & User interface for customizing a component in a customized package. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Display the form for customizing a component (dependently of the type of the component, e.g. departing date, etc.);
+          \item Redirects to viewcustompkg.xhtml at the end of the customization process.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+    \begin{center}
+      \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+        \hline
+        Component Name & \textbf{listcustompkg.xhtml} \\ \hline
+        Definition & User interface for listing all the customized packages. \\ \hline
+        Responsibilities & \parbox{0.65\textwidth}{
+          \begin{itemize}[noitemsep,leftmargin=*]
+            \item Display a list of all the customized packages, where for each of them there's a link to the specific viewcustompkg.xhtml page;
+            \item A search bar is available for finding a subset of packages.
+          \end{itemize}} \\ \hline
+        \end{tabular}
+      \end{center}
+      \begin{center}
+        \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+          \hline
+          Component Name & \textbf{remcustompkg.xhtml} \\ \hline
+          Definition & User interface for removing a specific custom package. \\ \hline
+          Responsibilities & \parbox{0.65\textwidth}{
+            \begin{itemize}[noitemsep,leftmargin=*]
+              \item Display a confirmation form for removing a specific custom package;
+              \item Redirects to listcustompkg.xhtml or viewcustompkg.xhtml either if the package was removed or not.
+            \end{itemize}} \\ \hline
+          \end{tabular}
+        \end{center}
+        \begin{center}
+          \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+            \hline
+            Component Name & \textbf{ViewCustomBean} \\ \hline
+            Definition & Managed bean for displaying a package. \\ \hline
+            Responsibilities & \parbox{0.65\textwidth}{
+              \begin{itemize}[noitemsep,leftmargin=*]
+                \item Load the details about a specific custom package;
+                \item Load a list of links to setcomponent.xhtml for each component;
+                \item Load the link to remcustompkg.xhtml for removing such component.
+              \end{itemize}} \\ \hline
+            \end{tabular}
+          \end{center}
+          \begin{center}
+            \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+              \hline
+              Component Name & \textbf{SetComponentBean} \\ \hline
+              Definition & Managed bean for customizing a component in a customized package. \\ \hline
+              Responsibilities & \parbox{0.65\textwidth}{
+                \begin{itemize}[noitemsep,leftmargin=*]
+                  \item Load the form for customizing a component (dependently of the type of the component, e.g. departing date, etc.);
+                  \item Redirects to viewcustompkg.xhtml at the end of the customization process.
+                \end{itemize}} \\ \hline
+              \end{tabular}
+            \end{center}
+            \begin{center}
+              \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+                \hline
+                Component Name & \textbf{ListCustomBean} \\ \hline
+                Definition & Managed bean for listing all the customized packages. \\ \hline
+                Responsibilities & \parbox{0.65\textwidth}{
+                  \begin{itemize}[noitemsep,leftmargin=*]
+                    \item Load the list of all the customized packages, where for each of them there's a link to the specific viewcustompkg.xhtml page;
+                    \item Load a subset of the customized packages if a search query is provided.
+                  \end{itemize}} \\ \hline
+                \end{tabular}
+              \end{center}
+              \begin{center}
+                \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+                  \hline
+                  Component Name & \textbf{RemCustomBean} \\ \hline
+                  Definition & Managed bean for removing a specific custom package. \\ \hline
+                  Responsibilities & \parbox{0.65\textwidth}{
+                    \begin{itemize}[noitemsep,leftmargin=*]
+                      \item Load a confirmation form for removing a specific custom package;
+                      \item Redirects to listcustompkg.xhtml or viewcustompkg.xhtml either if the package was removed or not.
+                    \end{itemize}} \\ \hline
+                  \end{tabular}
+                \end{center}
+  
+\subsection{Business logic component}
+In this section we provide the useful information for what needs to be implemented regarding this component. The following general diagram shows the subcomponents and their communication. We have identified 5 main subcomponents:
+\begin{itemize}
+  \item User manager,
+  \item Nomen manager,
+  \item Component manager,
+  \item Package manager,
+  \item Custom package manager.
+\end{itemize}
+Each of these beans will be defined as an EJB Bean by defining all the required methods in the specific beans.
+
+\insimg{business-tier}{Business tier components.}{0.46}
+
+\subsubsection{User manager}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{UserBeanInterface} \\ \hline
+    Definition & Interface instantiated every time communication between beans is needed. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Communicate with NomenBeanInterface, ComponentBeanInterface, PackageBeanInterface, CustomBeanInterface.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{UserBean} \\ \hline
+    Definition & Bean in charge for all the functionalities related to users. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Login user;
+        \item Logout user;
+        \item Register a new user;
+        \item Load profile information for the user.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+
+\subsubsection{Nomen manager}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{NomenBeanInterface} \\ \hline
+    Definition & Interface instantiated every time communication between beans is needed. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Communicate with UserBeanInterface.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{NomenBean} \\ \hline
+      Definition & Bean in charge for all the functionalities related to nomenclature entities. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Load list of available countries, cities, etc.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+
+\subsubsection{Component manager}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{ComponentBeanInterface} \\ \hline
+    Definition & Interface instantiated every time communication between beans is needed. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Communicate with UserBeanInterface.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{ComponentBean} \\ \hline
+      Definition & Bean in charge for all the functionalities related to the components. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Load list of available components;
+          \item Load the information on a single component;
+          \item Add a new component;
+          \item Remove a component.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+
+\subsubsection{Package manager}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{PackageBeanInterface} \\ \hline
+    Definition & Interface instantiated every time communication between beans is needed. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Communicate with UserBeanInterface.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{PackageBean} \\ \hline
+      Definition & Bean in charge for all the functionalities related to the packages. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Load list of available packages;
+          \item Load the information on a single package;
+          \item Add a new package;
+          \item Remove a package.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+
+\subsubsection{Custom package manager}
+\begin{center}
+  \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+    \hline
+    Component Name & \textbf{CustomBeanInterface} \\ \hline
+    Definition & Interface instantiated every time communication between beans is needed. \\ \hline
+    Responsibilities & \parbox{0.65\textwidth}{
+      \begin{itemize}[noitemsep,leftmargin=*]
+        \item Communicate with UserBeanInterface.
+      \end{itemize}} \\ \hline
+    \end{tabular}
+  \end{center}
+  \begin{center}
+    \begin{tabular}{ | p{3.3cm} | p{11.7cm} | }
+      \hline
+      Component Name & \textbf{CustomBean} \\ \hline
+      Definition & Bean in charge for all the functionalities related to the custom packages. \\ \hline
+      Responsibilities & \parbox{0.65\textwidth}{
+        \begin{itemize}[noitemsep,leftmargin=*]
+          \item Load list of customized (by the specific user) packages;
+          \item Load the information on a single customized package;
+          \item Customize a component of the package;
+          \item Remove a customized package.
+        \end{itemize}} \\ \hline
+      \end{tabular}
+    \end{center}
+    
+\subsection{Persistence component}
+
+\insimg{persistence-component}{Persistence component diagram.}{0.5}
+
+In the Persistence component diagram are shown all the entities in the application. All of these entities represent a high level object view of the tables in the database, and likewise we are providing an object oriented model for the database, that will be used in our application. So, all of the entities have inside all the attributes that are specified in the associated table in the database.
+
+In the following table there is a short description of the responsibilities of each of the entities from above.
+
+\begin{center}
+  \begin{tabular}{ | p{3cm} | p{12cm} | }
+    \hline
+    \textbf{Entity} & \textbf{Responsibilities} \\ \hline
+    Users & Represents the users in the system. \\ \hline
+    Nomcountry & Represents a nomenclature of all the countries in the system. \\ \hline
+    Nomcity & Represents a nomenclature of all the cities in the system. \\ \hline
+    Nomrole & Represents a nomenclature of all the roles in the system. \\ \hline
+    Nomcomponents & Represents a nomenclature of all the types of components in the system. \\ \hline
+    Components & Represents the components in the system. \\ \hline
+    Packages & Represents the packages in the system. \\ \hline
+    CustomPackages & Represents the custom packages in the system. \\ \hline
+  \end{tabular}
+\end{center}
+
+\section{Database model}
+In the following section we will provide a detail description of the database by providing its both views: the \textbf{conceptual} and the \textbf{logical design diagrams}.
+
+\subsection{Conceptual design}
+The conceptual design of the database is represented with the Entity Relationship Diagram (ER) given bellow. In the following text we will provide a description of the elements in the diagram. Let us clarify that:
+\begin{itemize}
+  \item 1:1 means one to one relation;
+  \item 1:M means one to many relation;
+  \item M:M means many to many relation.
+\end{itemize}
+
+Let's start by describing all the elements in the ER diagram. A common characteristic for all entities is that they have primary key named id. In the ER diagram, we can see that all entities have an underlined attribute id.
+
+The diagram has four Nomen entities:
+\begin{itemize}[noitemsep]
+  \item Nomcity,
+  \item Nomcountry,
+  \item Nomrole,
+  \item Nomcomponent,
+\end{itemize}
+each of them representing a specific form of data in our system, called \textbf{nomenclatures}. Specifically, Nomcomponent represent the type of components available (e.g. flight, train, etc.), and the parameters are going to be dealt with via a JSON specification:
+\begin{verbatim}
+  {
+      "param1": { "type": "string", "value": "" },
+      "param2": { "type": "date", "value": "" },
+      ...,
+      "paramn": { "type": "int", "value": "" }
+  }
+\end{verbatim}
+Nomrole has also a level because it could be possible to give access to same area based on the numerical level (\texttt{if (level > 5) ...}).\newline
+
+The Users entity represents the information for the users in the system. Besides the main attributes, we want to know which role the user belongs to, so we have a 1:M relation between the Users and Nomrole, because one user can has only one role, but many users can have that same role.\newline
+
+The Components entity represents the information for the components in the system. Other than the name and some other details, there are three 1:M relations with Nomcity, Nomcountry and Nomcomponent, because a component can have one city, one country and one type, but that same city, country  and type can be the element in some other component. The defaults field will contain a copy of the parameters in the associated Nomcomponent, with some of the parameters set with a default value.\newline
+
+The packages entity represents the information for the packages in the system. The only interesting bit is the M:M relation with the Components entity, because a package is made of many component, but a component can be part of more than one package.\newline
+
+Lastly, the CustomPackages entity represents the information for the customized packages in the system. There's a 1:M relation with Users and Packages, because a CustomPackage is associated to one user and one package, but there can be a number of customized packages from the same package, and one user can have more than one customized package. The configuration field follows the JSON specification above, where the parameters will finally have the customized value per user.
+
+\insimg{database-design}{Conceptual ER of the database.}{0.5}
+
+\subsection{Logical design}
+The logical design (LD) diagram represents the final implementation of the database, and it is based on the conceptual ER diagram. The LD diagram, showed below, is generated automatically by using the MySQL workbench tool. Using the conceptual model to create the database will means that the entities will be translated into tables, and the attributes of each of the entities will become columns in the tables. Furthermore, the M:M relations will become tables in the LD diagram, and the 1:M relations will be model by using foreign keys.\newline
+
+In the LD diagram we see all the tables in the database. For all of them, the common characteristic is that the primary key is of type integer, and is an autoincrement column. That means that when inserting new tuples into the table, we are not going to take care about the value of the id column, because it will be assigned automatically by the database management system (DBMS).\newline
+
+The users table, besides the main attributes, has one foreign key to the table Nomrole, and likewise we are implementing the 1:M relation from the conceptual model of the database. This key has an integer column value associated (role), because we created all of the primary keys in the database as integer autoincrementing columns.\newline
+
+The components table, besides the main attributes, contains the foreign keys to the 1:M relations with Nomcity, Nomcountry and Nomcomponent (respectively with the integer valued fields city, country, type).\newline
+
+The packages table has nothing interesting other than the main attributes. The componentinpackage table is the one taking care of the relationship between the components and the packages (that is the M:M relation considered in the ER), using the two foreign keys to the components and packages table (respectively with the fields component and package).\newline
+
+The custompackages table has the two foreign keys to the associated package and the user that created it (represented in the 1:M relations), with the fields package and user.
+
+\insimg{ld-diagram}{Logical design of the database.}{0.5}
+
+\section{Web site organization}
+The diagram in fig.~\ref{fig:site-navigation} describes the site navigation in the TravelDream project.
+
+\insimg{site-navigation}{Web site navigation diagram.}{0.4}
+
+\section{Runtime view}
+The diagram in fig.~\ref{fig:runtime-view} describes the runtime view of the TravelDream project. The software product that will be released will be traveldream.ear that can be deployed in any JEE Application Server.
+
+\insimg{runtime-view}{Runtime view of TravelDream.}{0.5}
+
+\section{Deployment view}
+The diagram in fig.~\ref{fig:deployment-view} shows the deployment view of our software product.
+
+\insimg{deployment-view}{Deployment view of TravelDream.}{0.5}
+
+\section{Module view}
+The diagram in fig.~\ref{fig:module-view} describes how the source code will be organized.
+
+\insimg{module-view}{Source packages diagram.}{0.5}
+
+\chapter{Appendixes}
+
+\section{RASD modification}
+None at the moment.
+
+\end{document}
