@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="TravelDreamEJB" transaction-type="JTA">
+		<jta-data-source>jdbc/traveldream_connection</jta-data-source>
+		<class>it.polimi.travelDream.ejb.entities.City</class>
+		<class>it.polimi.travelDream.ejb.entities.Component</class>
+		<class>it.polimi.travelDream.ejb.entities.Country</class>
+		<class>it.polimi.travelDream.ejb.entities.CustomPackage</class>
+		<class>it.polimi.travelDream.ejb.entities.DateComponent</class>
+		<class>it.polimi.travelDream.ejb.entities.NomComponent</class>
+		<class>it.polimi.travelDream.ejb.entities.Package</class>
+		<class>it.polimi.travelDream.ejb.entities.Role</class>
+		<class>it.polimi.travelDream.ejb.entities.User</class>
+		<properties>
+			<property name="eclipselink.ddl-generation" value="create-tables"/>
+		</properties>
+	</persistence-unit>
+</persistence>

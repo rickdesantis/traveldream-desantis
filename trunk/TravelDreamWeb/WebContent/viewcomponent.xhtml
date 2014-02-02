@@ -1,0 +1,40 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		#{viewComponentBean.component.name}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>#{viewComponentBean.component.name}</h3>
+		
+		<p>#{viewComponentBean.component.description}</p>
+		
+		<ul style="list-style-type: none; padding: 1.2em; margin: 0">
+			<li style="padding: 0.5em"><span style="font-weight: bold">City:</span> #{viewComponentBean.component.city}</li>
+			
+			<ui:repeat value="#{viewComponentBean.defaults}" var="entry">
+    			<li style="padding: 0.5em"><span style="font-weight: bold">#{entry.key}:</span> #{entry.value}</li>
+			</ui:repeat>
+			
+			<h:panelGroup rendered="#{viewComponentBean.hasDates}">
+			<li style="padding: 0.5em"><span style="font-weight: bold">Times: </span><ul>
+			<ui:repeat value="#{viewComponentBean.dates}" var="dates">
+    			<li style="padding: 0.5em">#{viewComponentBean.formatTime(dates.key)} - #{viewComponentBean.formatTime(dates.value)}</li>
+			</ui:repeat>
+			</ul></li>
+			</h:panelGroup>
+			
+			<li style="padding: 0.5em"><span style="font-weight: bold">Price:</span> #{viewComponentBean.component.price} €</li>
+		</ul>
+		
+		<p><h:outputLink rendered="#{mainBean.isEmployee}" value="#{defaultsBean.EMPLOYEES}managetime.xhtml?compName=#{viewComponentBean.component.name}">Manage the dates</h:outputLink></p>
+		<p><h:outputLink rendered="#{mainBean.isEmployee}" value="#{defaultsBean.EMPLOYEES}remcomponent.xhtml?compName=#{viewComponentBean.component.name}">Remove this component</h:outputLink></p>
+		
+	</ui:define>
+</ui:composition>

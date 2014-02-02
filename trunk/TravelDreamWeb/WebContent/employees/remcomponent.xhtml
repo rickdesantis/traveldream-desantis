@@ -1,0 +1,40 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		#{remComponentBean.compName}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>#{remComponentBean.compName}</h3>
+
+		<p>Do you really want to remove this component?</p>
+
+		<h:form>
+
+			<p:panel style="width: 36em;">
+				<h:panelGrid columns="2" cellpadding="5" id="regGrid">
+
+					<h:outputText value="Confirm: " />
+					<p:selectOneRadio id="confirm" required="true" layout="grid"
+						columns="2" value="#{remComponentBean.confirm}">
+						<f:selectItem itemLabel="Yes" itemValue="true" />
+						<f:selectItem itemLabel="No" itemValue="false" />
+					</p:selectOneRadio>
+					<h:inputHidden value="#{remComponentBean.compName}" id="hiddenName" />
+
+					<div></div>
+					<p:commandButton value="Ok" update="regGrid" action="#{remComponentBean.remove()}" />
+
+				</h:panelGrid>
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

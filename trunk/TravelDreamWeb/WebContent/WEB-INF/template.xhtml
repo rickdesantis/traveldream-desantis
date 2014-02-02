@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+
+<h:head>
+	<title><ui:insert name="title">Template</ui:insert> - TravelDream</title>
+	
+	<style>
+		body {
+			padding-top: 0;
+			margin-top: 0;
+			font-family: sans-serif;
+		}
+		div#header {
+			width: 100%;
+			padding-top: 0;
+			background-image: url('/TravelDreamWeb/img/right.png');
+			background-repeat: no-repeat;
+			background-position: right top;
+		}
+		div#body {
+			overflow: auto;
+			width: 100%;
+		}
+		div#menu {
+			width: 405px;
+			float: left;
+		}
+		div#menucontent {
+			width: 216px;
+			margin-left: 93px;
+			background: #f0ffc3;
+			padding-top: 1.2em;
+			padding-bottom: 0.2em;
+			display: block;
+			min-height: 20em;
+		}
+		div#content {
+			 float: left;
+			 padding-left: 1.2em;
+			 padding-right: 1.2em;
+		}
+		div#footer {
+			padding-top: 5em;
+			padding-bottom: 1em;
+			text-align: center;
+			font-size: 0.8em;
+			width: 100%;
+		}
+		div#menu ul {
+			list-style-type: none;
+			padding: 1.2em;
+			margin: 0;
+		}
+		div#menu li {
+			margin-bottom: 1em;
+		}
+		.ui-widget, .ui-widget .ui-widget {
+        	font-size: 90% !important;
+		}
+	</style>
+</h:head> 
+<h:body> 
+	<div id="header">
+		<a href="/TravelDreamWeb/index.xhtml"><img src="/TravelDreamWeb/img/logo.png" /></a>
+	</div>
+	<div id="body">
+    	<div id="menu">
+    		<div id="menucontent"><ui:include src="/WEB-INF/menu.xhtml"/></div>
+    	</div>
+    	<div id="content">
+    		<ui:insert name="content">Default content</ui:insert>
+    	</div>
+    </div>
+    <div id="footer">Progetto di Software Engineering 2 di Riccardo B. Desantis (matricola 765106)</div>
+</h:body> 
+</html>

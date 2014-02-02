@@ -1,0 +1,47 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		Custom Packages
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+			<p:dataTable var="packs"
+				value="#{listCustomBean.printablePackagesBis}" style="width: 40em" >
+
+				<f:facet name="header">
+					<h:form>
+						<h:outputText value="Search: " />
+						<p:inputText value="#{listCustomBean.criteria}" style="width: 30em" />
+						<p:commandButton action="#{listCustomBean.getUpdate()}" value="Ok" />
+					</h:form>
+				</f:facet>
+
+				<p:column headerText="Package">
+					<h:outputLink value="#{defaultsBean.CUSTOMERS}viewcustompkg.xhtml?packageId=#{packs.id}">
+						#{packs.name}
+					</h:outputLink>
+				
+				</p:column>
+
+				<p:column headerText="Components">
+					<ul>
+						<ui:repeat value="#{packs.components}" var="comps">
+							<li style="padding: 0.5em">#{comps}</li>
+						</ui:repeat>
+					</ul>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		
+
+	</ui:define>
+
+
+</ui:composition>

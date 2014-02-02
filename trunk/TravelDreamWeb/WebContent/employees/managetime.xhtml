@@ -1,0 +1,76 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		#{manageTimeBean.component.name}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>#{manageTimeBean.component.name}</h3>
+
+		<h:form id="form">
+
+			<p:panel header="Handle the times for the component"
+				style="width: 36em;">
+				<h:panelGrid columns="2" cellpadding="5" id="regGrid">
+
+					<h:outputText value="Start: " />
+					<p:inputMask id="start" value="#{manageTimeBean.date.start}"
+						style="width: 25em" mask="99:99" required="true" />
+					<h:outputText value="End: " />
+					<p:inputMask id="end" value="#{manageTimeBean.date.end}"
+						style="width: 25em" mask="99:99" required="true" />
+					<div></div>
+					<p:commandButton value="Add Time" update="form formDates @parent"
+						action="#{manageTimeBean.reinit()}">
+						<p:collector value="#{manageTimeBean.date}"
+							addTo="#{manageTimeBean.dates}" />
+					</p:commandButton>
+					
+				</h:panelGrid>
+	
+					<p:outputPanel id="formDates">
+						<p:dataTable id="datesTable" value="#{manageTimeBean.dates}"
+							var="date">
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Start" />
+								</f:facet>
+								<h:outputText value="#{date.start}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="End" />
+								</f:facet>
+								<h:outputText value="#{date.end}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Operation" />
+								</f:facet>
+								<p:commandLink value="Remove" update=":form:formDates"
+									process=":form:formDates" action="#{manageTimeBean.update()}">
+									<p:collector value="#{date}"
+										removeFrom="#{manageTimeBean.dates}" />
+								</p:commandLink>
+							</p:column>
+
+						</p:dataTable>
+					</p:outputPanel>
+					
+					<p><h:outputLink  value="#{defaultsBean.EMPLOYEES}viewcomponent.xhtml?compName=#{manageTimeBean.component.name}">Go back to the component</h:outputLink></p>
+
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

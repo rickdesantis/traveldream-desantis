@@ -1,0 +1,23 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		#{profileBean.signature}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>#{profileBean.user.name} #{profileBean.user.surname}</h3>
+		
+		<ul style="list-style-type: none; padding: 1.2em; margin: 0">
+			<li style="padding: 0.5em"><span style="font-weight: bold">Email: </span> #{profileBean.user.email}</li>
+			<li style="padding: 0.5em"><span style="font-weight: bold">Phone: </span> #{profileBean.user.phone}</li>
+			<li style="padding: 0.5em"><span style="font-weight: bold">Address: </span> #{profileBean.user.address}</li>
+		</ul>
+		
+	</ui:define>
+</ui:composition>

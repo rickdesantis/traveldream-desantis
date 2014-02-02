@@ -1,0 +1,40 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		Add Package
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+
+			<p:panel header="Add a new package" style="width: 43em;">
+				<h:panelGrid columns="2" cellpadding="5" id="regGrid" >
+					<h:outputText value="Name*: " />
+					<p:inputText id="name" value="#{addPackageBean.pack.name}" style="width: 33em" required="true" />
+					
+					<h:outputText value="Proposed days*: " />
+					<p:spinner id="days" value="#{addPackageBean.days}" required="true" min="1" max="365" />
+					
+					<h:outputText value="Description: " />
+					<p:inputTextarea id="description" value="#{addPackageBean.pack.description}" rows="5" style="width: 33em" autoResize="false"/>
+					
+					<h:outputText value="Components*: " />
+					<p:pickList id="pickList" value="#{addPackageBean.components}" var="comp"   
+                		itemLabel="#{comp}" itemValue="#{comp}" />
+					
+					<div></div>
+					<p:commandButton value="Add" update="regGrid"
+				action="#{addPackageBean.register()}" />
+				</h:panelGrid>
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

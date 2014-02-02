@@ -1,0 +1,36 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		#{viewPackageBean.package.name}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>#{viewPackageBean.package.name}</h3>
+		
+		<p>#{viewPackageBean.package.description}</p>
+		
+		<ul style="list-style-type: none; padding: 1.2em; margin: 0">
+			
+			<li style="padding: 0.5em"><span style="font-weight: bold">Proposed days:</span> #{viewPackageBean.package.days}</li>
+			<li style="padding: 0.5em"><span style="font-weight: bold">Components: </span><ul>
+			<ui:repeat value="#{viewPackageBean.allComponents}" var="comps">
+    			<li style="padding: 0.5em">
+    				<h:outputLink value="#{defaultsBean.BASE_PATH}viewcomponent.xhtml?compName=#{comps.name}">#{comps.name}</h:outputLink>
+    			</li>
+			</ui:repeat>
+			</ul></li>
+			
+			<li style="padding: 0.5em"><span style="font-weight: bold">Total Price:</span> #{viewPackageBean.totalPrice} €</li>
+		</ul>
+		
+		<p><h:outputLink rendered="#{mainBean.isCustomer}" value="#{defaultsBean.CUSTOMERS}viewcustompkg.xhtml?packageName=#{viewPackageBean.package.name}&amp;c=true">Buy and customize this package</h:outputLink></p>
+		<p><h:outputLink rendered="#{mainBean.isEmployee}" value="#{defaultsBean.EMPLOYEES}rempackage.xhtml?packageName=#{viewPackageBean.package.name}">Remove this package</h:outputLink></p>
+		
+	</ui:define>
+</ui:composition>
