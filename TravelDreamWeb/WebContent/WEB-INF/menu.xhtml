@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head></h:head>
+
+<h:body>
+
+<ul>
+
+	<h:panelGroup rendered="#{!mainBean.isOffline}">
+		<li><h:outputLink value="#{defaultsBean.BASE_PATH}profile.xhtml" >#{profileBean.mySignature}</h:outputLink></li>
+	</h:panelGroup>
+	<h:panelGroup id="offline" rendered="#{mainBean.isOffline}">
+
+	<li><a href="#{defaultsBean.CUSTOMERS}index.xhtml">Login as Customer</a></li>
+	<li><a href="#{defaultsBean.EMPLOYEES}index.xhtml">Login as Employee</a></li>
+	<li><a href="#{defaultsBean.BASE_PATH}register.xhtml">Sign Up</a></li>
+
+	</h:panelGroup>
+	<h:panelGroup id="employee" rendered="#{mainBean.isEmployee}">
+	
+	<li><h:form><h:commandLink action="#{mainBean.logout()}" value="Logout" /></h:form></li>
+	<li><a href="#{defaultsBean.EMPLOYEES}addpackage.xhtml">Add Package</a></li>
+	<li><a href="#{defaultsBean.EMPLOYEES}addcomponent.xhtml">Add Component</a></li>
+	<li><a href="#{defaultsBean.EMPLOYEES}listcomponents.xhtml">The Components</a></li>
+	
+	</h:panelGroup>
+	<h:panelGroup id="customer" rendered="#{mainBean.isCustomer}">
+	
+	<li><h:form><h:commandLink action="#{mainBean.logout()}" value="Logout" /></h:form></li>
+	<li><a href="#{defaultsBean.CUSTOMERS}listcustompkg.xhtml">My Packages</a></li>
+	
+	</h:panelGroup>
+	
+	<li><a href="#{defaultsBean.BASE_PATH}listpackage.xhtml">The Packages</a></li>
+	<li><a href="#{defaultsBean.BASE_PATH}company.xhtml">The Company</a></li>
+</ul>
+
+</h:body>
+</html>

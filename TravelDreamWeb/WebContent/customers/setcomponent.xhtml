@@ -1,0 +1,77 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		#{setComponentBean.component.name}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>#{setComponentBean.component.name}</h3>
+		
+		<p>#{setComponentBean.component.description}</p>
+		
+		<h:form>
+		
+		<ul style="list-style-type: none; padding: 1.2em; margin: 0">
+			
+			<h:panelGroup id="regGrid">
+		
+			<li style="padding: 0.5em"><span style="font-weight: bold">City:</span> #{setComponentBean.component.city}</li>
+			
+			<ui:repeat value="#{setComponentBean.finalDefaults}" var="entry">
+    			<li style="padding: 0.5em"><span style="font-weight: bold">#{entry.key}:</span> #{entry.value}</li>
+			</ui:repeat>
+			
+			<li style="padding: 0.5em"><span style="font-weight: bold">Date: </span><ul style="list-style-type: none; padding: 1.2em; margin: 0">
+			
+			<li>
+			
+			<p:inputText id="date" value="#{setComponentBean.date}" style="width: 10em" mask="99/99/9999" />
+			
+			</li>
+			
+			</ul></li>
+
+			<h:panelGroup rendered="#{setComponentBean.hasDuration}">
+			<li style="padding: 0.5em"> <span style="font-weight: bold">Days: </span><ul style="list-style-type: none; padding: 1.2em; margin: 0">
+			
+			<li>
+			
+			<p:spinner id="days" value="#{setComponentBean.days}" min="1" max="365" >
+				<p:ajax update="price" process="@this" />
+			</p:spinner>
+			
+			</li>
+			
+			</ul></li></h:panelGroup>
+			
+			<h:panelGroup rendered="#{setComponentBean.hasDates}">
+			<li style="padding: 0.5em"> <span style="font-weight: bold">Chosen time: </span><ul style="list-style-type: none; padding: 1.2em; margin: 0">
+			
+			<li>
+			<p:selectOneMenu id="times" value="#{setComponentBean.time}" style="width: 10em">
+				<f:selectItems value="#{setComponentBean.dates}" var="dates" itemLabel="#{setComponentBean.formatTime(dates.key)} - #{setComponentBean.formatTime(dates.value)}" itemValue="#{setComponentBean.formatFullDate(dates.key)}" />
+			</p:selectOneMenu>
+			</li>
+			
+			</ul></li></h:panelGroup>
+			
+			<li style="padding: 0.5em"><span style="font-weight: bold">Price: </span>
+				<h:outputText value="#{setComponentBean.price} €" id="price" /><h:outputText value="/day" rendered="#{setComponentBean.hasDuration}"/>
+			</li>
+			
+			</h:panelGroup>
+			
+			<p:commandButton value="Save" update="regGrid"
+				action="#{setComponentBean.update()}" ajax="false" />
+		</ul>
+		
+		</h:form>
+		
+	</ui:define>
+</ui:composition>

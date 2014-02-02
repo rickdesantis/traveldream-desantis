@@ -1,0 +1,45 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		#{viewCustomBean.owner.name}'s #{viewCustomBean.orig.name}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>#{viewCustomBean.owner.name}'s #{viewCustomBean.orig.name}</h3>
+		
+		<p><h:outputLink value="#{defaultsBean.BASE_PATH}viewpackage.xhtml?packageName=#{viewCustomBean.orig.name}">View the original package</h:outputLink></p>
+		
+		<ul style="list-style-type: none; padding: 1.2em; margin: 0">
+		
+			<li style="padding: 0.5em"><span style="font-weight: bold">Suggested days for the package: </span> #{viewCustomBean.pack.days}</li>
+			<li style="padding: 0.5em"><span style="font-weight: bold">Actual days: </span> #{viewCustomBean.actualDays}</li>
+			<li style="padding: 0.5em"><span style="font-weight: bold">Departure date: </span> #{viewCustomBean.departureDate}</li>
+			<li style="padding: 0.5em"><span style="font-weight: bold">Return date: </span> #{viewCustomBean.returnDate}</li>
+			<li style="padding: 0.5em"><span style="font-weight: bold">Components: </span><ul>
+			<ui:repeat value="#{viewCustomBean.allComponents}" var="comps">
+    			<li style="padding: 0.5em">
+					
+					<h:outputLink value="#{defaultsBean.CUSTOMERS}setcomponent.xhtml" rendered="#{viewCustomBean.userIsOwner()}">
+							<f:param name="packageId" value="#{viewCustomBean.pack.id}" />
+ 							<f:param name="compName" value="#{comps.name}" />
+ 							#{comps.name}
+						</h:outputLink>
+    			
+    				<h:outputText rendered="#{!viewCustomBean.userIsOwner()}" value="#{comps.name}" />
+    			</li>
+			</ui:repeat>
+			</ul></li>
+			
+			<li style="padding: 0.5em"><span style="font-weight: bold">Total Price:</span> #{viewCustomBean.totalPrice} €</li>
+		</ul>
+		
+		<p><h:outputLink rendered="#{viewCustomBean.userIsOwner()}" value="#{defaultsBean.CUSTOMERS}remcustompkg.xhtml?packageId=#{viewCustomBean.pack.id}">Remove this package</h:outputLink></p>
+		
+	</ui:define>
+</ui:composition>

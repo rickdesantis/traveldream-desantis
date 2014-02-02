@@ -1,0 +1,51 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		Sign Up
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+
+			<p:panel header="Sign Up" style="width: 36em;">
+				<h:panelGrid columns="2" cellpadding="5" id="regGrid" >
+					<h:outputText value="Name*: " />
+					<p:inputText id="name" style="width: 25em" required="true" value="#{registerBean.user.name}" />
+					<h:outputText value="Surname*: " />
+					<p:inputText id="surname" style="width: 25em" required="true" value="#{registerBean.user.surname}" />
+					<h:outputText value="Email*: " />
+					<p:inputText id="email" validatorMessage="The email is not valid"
+						style="width: 25em" required="true" value="#{registerBean.user.email}" />
+					<h:outputText value="Password*: " />
+					<p:password id="password" style="width: 25em" feedback="true"
+						match="password2" required="true" value="#{registerBean.user.password}" />
+					<h:outputText value="Confirm password*: " />
+					<p:password id="password2" style="width: 25em" required="true" value="#{registerBean.user.password}" />
+					<h:outputText value="Address: " />
+					<p:inputText id="address" style="width: 25em" value="#{registerBean.user.address}" />
+					<h:outputText value="Phone: " />
+					<p:inputMask id="phone" style="width: 25em" mask="+99 999 9999999" value="#{registerBean.user.phone}" />
+
+					<h:outputText value="Account type*: " />
+					<p:selectOneRadio id="role" required="true" layout="grid"
+						columns="1" value="#{registerBean.user.role}">
+						<f:selectItems value="#{registerBean.roles}" var="role" itemLabel="#{role.name}" itemValue="#{role.name}" />
+					</p:selectOneRadio>
+
+
+					<div></div>
+					<p:commandButton value="Sign Up" update="regGrid" action="#{registerBean.register()}" />
+
+				</h:panelGrid>
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

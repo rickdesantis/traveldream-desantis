@@ -1,0 +1,76 @@
+<ui:composition template="/WEB-INF/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">
+		Add Component
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+
+			<p:panel header="Add a new component" style="width: 36em;">
+				<h:panelGrid columns="2" cellpadding="5" id="regGrid">
+					<h:outputText value="Name*: " />
+					<p:inputText id="name" value="#{addComponentBean.component.name}"
+						style="width: 25em" required="true" />
+
+					<h:outputText value="Type*: " />
+					<p:selectOneMenu id="type" value="#{addComponentBean.type}"
+						required="true" style="width: 25em">
+						<p:ajax event="change" update="defaults" />
+						<f:selectItems value="#{addComponentBean.types}" var="type"
+							itemLabel="#{type.name}" itemValue="#{type.name}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="Country*: " />
+					<p:selectOneMenu id="country" value="#{addComponentBean.country}"
+						required="true" editable="true" style="width: 25em">
+						<p:ajax event="change" update="city" />
+						<f:selectItems value="#{addComponentBean.countries}" var="country"
+							itemLabel="#{country.name}" itemValue="#{country.name}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="City*: " />
+					<p:selectOneMenu id="city" value="#{addComponentBean.city}"
+						required="true" editable="true" style="width: 25em">
+						<f:selectItems value="#{addComponentBean.cities}" var="city"
+							itemLabel="#{city.name}" itemValue="#{city.name}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="Price*: " />
+					<p:inputText id="price" value="#{addComponentBean.price}"
+						style="width: 25em" required="true" />
+
+					<h:outputText value="Description: " />
+					<p:inputTextarea id="description" rows="5" style="width: 25em"
+						autoResize="false"
+						value="#{addComponentBean.component.description}" />
+
+
+				</h:panelGrid>
+
+
+				<h:panelGrid columns="2" id="defaults" cellpadding="5">
+
+					<ui:repeat value="#{addComponentBean.defaults}" var="entry">
+						<h:outputText value="#{entry.key}*: " />
+						<p:inputText id="el#{entry.key}" style="width: 25em"
+							required="true" />
+
+					</ui:repeat>
+
+					<div></div>
+					<p:commandButton value="Add" update="regGrid"
+						action="#{addComponentBean.register()}" />
+				</h:panelGrid>
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
