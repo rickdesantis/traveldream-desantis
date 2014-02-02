@@ -140,13 +140,48 @@ To make the system work, we'll need:
   in the EJB component by selecting to \textit{``drop and create the tables''}, and generate all the tables from the JPA Entities via the menu;
   \item to initialize the data in the database there's a SQL file that you should run: it's
   \begin{verbatim}
-  ejbModule/META-INF/init\_entries.sql\end{verbatim}
+  ejbModule/META-INF/init_entries.sql\end{verbatim}
   \item there are two users already registered, and they are:
   \begin{itemize}
     \item effetti@gmail.com: password password, role employee;
     \item lino@gmail.com: password password, role customer.
   \end{itemize}
 \end{enumerate}
+
+\section{Configuration}
+My actual configuration for Glassfish 4.0 is:
+\begin{itemize}
+    \item the connection pool is called    \texttt{TravelDream\_connection}
+    \item the jdbc resource is \texttt{jdbc/traveldream\_connection}
+    \item the authentication realm has these details:
+    \begin{itemize}
+      \item Realm Name: \texttt{authJdbcRealm}
+      \item JAAS Context: \texttt{jdbcRealm}
+      \item JNDI: \texttt{jdbc/traveldream\_connection}
+      \item User Table: \texttt{Users}
+      \item User Name Column: \texttt{EMAIL}
+      \item Password Column: \texttt{PASSWORD}
+      \item Group Table: \texttt{Nomrole}
+      \item Group Name Column: \texttt{NAME}
+      \item Password Encryption Algorithm: \texttt{MD5}
+      \item Assign Groups: \texttt{employee,customer}
+      \item Digest Algorithm: \texttt{SHA-512}
+    \end{itemize}
+  \end{itemize}
+
+\section{Tests}
+I've tried doing a lot of things without problems:
+\begin{itemize}
+  \item login to the system (with correct data and not) and logout;
+  \item sign up;
+  \item list packages (with filtering) and show details;
+  \item creation of a custom package for a customer;
+  \item listing, modification and elimination of a custom package for the customer that created it;
+  \item list components for the employee;
+  \item adding of a new component for an employee, where if we put a different country and city in the form they'll be handled automatically;
+  \item removing a component or a package for an employee;
+  \item etc.
+\end{itemize}
 
 \section{Bugs}
 Sadly solving some bugs took away a lot of time, and I didn't make it in time. Anyway, the only other things I've found that can't be solved easily are:
