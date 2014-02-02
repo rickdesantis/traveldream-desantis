@@ -1,0 +1,158 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{fancyvrb}
+\usepackage{eurosym}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{multirow}
+\usepackage[font={footnotesize,it}]{caption}
+
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.5}
+
+\usepackage[margin=0.7in]{geometry}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=trbl,
+  %xleftmargin=\parindent,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  %identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  numbers=left,
+  tabsize=2,
+  frameround=tttt,
+  numberstyle=\footnotesize\ttfamily,
+  xrightmargin=50pt,
+  xleftmargin=50pt,
+  escapeinside={(*@}{@*)},
+  morekeywords={pipe,module,in,out},
+}
+\lstset{escapechar=@,style=customc}
+
+\usepackage{ifpdf}
+\ifpdf
+    \usepackage[pdftex]{graphicx}   % to include graphics
+    \pdfcompresslevel=9
+    \usepackage[pdftex,     % sets up hyperref to use pdftex driver
+            plainpages=false,   % allows page i and 1 to exist in the same document
+            breaklinks=true,    % link texts can be broken at the end of line
+            colorlinks=true,
+            pdftitle={Implementation for the TravelDream Project}
+            pdfauthor={Riccardo B. Desantis}
+           ]{hyperref}
+    \usepackage{thumbpdf}
+\else
+    \usepackage{graphicx}       % to include graphics
+    \usepackage{hyperref}       % to simplify the use of \href
+\fi
+
+\graphicspath{{images/}}
+
+\newcommand{\insimg}[3]{
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[scale=#3]{#1}
+    \end{center}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}
+}
+
+\newcommand{\putimg}[2]{
+  \begin{center}
+    \includegraphics[scale=#2]{#1}
+  \end{center}
+}
+
+\newenvironment{sistema}%
+{\left\lbrace\begin{array}{@{}l@{}}}%
+  {\end{array}\right.}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+
+\newcommand{\italiano}[1]{%
+  \begin{otherlanguage*}{italian}#1\end{otherlanguage*}}
+
+\lstnewenvironment{code}[1][]{ %
+  \lstset{ %
+    mathescape,
+    numbers=none,
+    frame=none,
+    basicstyle=\normalsize\ttfamily,
+    xleftmargin=2em,
+    #1
+  }}%
+  {}
+
+\newcommand{\linecode}[2]{ %
+  \lstinline[mathescape,#2]|#1|}
+
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+%\usepackage{marvosym}
+% \DeclareUnicodeCharacter{1e25}{\DOTH{}}
+
+
+\begin{document}
+
+\title{\textbf{TravelDream Project}}
+\author{\textbf{Implementation}}
+\date{Riccardo B. Desantis - matr. 765106}
+
+\maketitle
+
+\section{Purpose}
+This document describes the differences between the implementation and the proposed solution, and eventually the unresolved bugs found.
+
+\section{Differences}
+I've simplified the tables, eliminating the \texttt{id} column when possible and using the \texttt{name} of the element instead.\newline
+
+I've followed strictly all the other details in the RASD and DD documents, or at least no other important detail has been changed. Surely, some details about the design of the webpage is changed, but all the things changed are trivial.
+
+\section{Instructions}
+To make the system work, we'll need:
+\begin{enumerate}
+  \item to configure the connection to the database, and the realm for the authentication;
+  \item to create the table the first time, and this is doable modifying the file:
+  \begin{verbatim}
+  ejbModule/META-INF/persistence.xml\end{verbatim}
+  in the EJB component by selecting to \textit{``drop and create the tables''}, and generate all the tables from the JPA Entities via the menu;
+  \item to initialize the data in the database there's a SQL file that you should run: it's
+  \begin{verbatim}
+  ejbModule/META-INF/init\_entries.sql\end{verbatim}
+  \item there are two users already registered, and they are:
+  \begin{itemize}
+    \item effetti@gmail.com: password password, role employee;
+    \item lino@gmail.com: password password, role customer.
+  \end{itemize}
+\end{enumerate}
+
+\section{Bugs}
+Sadly solving some bugs took away a lot of time, and I didn't make it in time. Anyway, the only other things I've found that can't be solved easily are:
+\begin{itemize}
+  \item \textbf{the system can't distinguish between the two roles}: that means that both roles are the same for it, so I implemented a direct check that doesn't show unallowed elements at all;
+  \item weird behavior happens when the database is empty.
+\end{itemize}
+
+\end{document}
