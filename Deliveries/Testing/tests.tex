@@ -1,0 +1,985 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{fancyvrb}
+\usepackage{eurosym}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{multirow}
+\usepackage[font={footnotesize,it}]{caption}
+
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.5}
+
+\usepackage[margin=0.7in]{geometry}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=trbl,
+  %xleftmargin=\parindent,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  %identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  numbers=left,
+  tabsize=2,
+  frameround=tttt,
+  numberstyle=\footnotesize\ttfamily,
+  xrightmargin=50pt,
+  xleftmargin=50pt,
+  escapeinside={(*@}{@*)},
+  morekeywords={pipe,module,in,out},
+}
+\lstset{escapechar=@,style=customc}
+
+\usepackage{ifpdf}
+\ifpdf
+    \usepackage[pdftex]{graphicx}   % to include graphics
+    \pdfcompresslevel=9
+    \usepackage[pdftex,     % sets up hyperref to use pdftex driver
+            plainpages=false,   % allows page i and 1 to exist in the same document
+            breaklinks=true,    % link texts can be broken at the end of line
+            colorlinks=true,
+            pdftitle={Tests for the TravelDream Project}
+            pdfauthor={Riccardo B. Desantis}
+           ]{hyperref}
+    \usepackage{thumbpdf}
+\else
+    \usepackage{graphicx}       % to include graphics
+    \usepackage{hyperref}       % to simplify the use of \href
+\fi
+
+\graphicspath{{images/}}
+
+\newcommand{\insimg}[3]{
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[scale=#3]{#1}
+    \end{center}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}
+}
+
+\newcommand{\putimg}[2]{
+  \begin{center}
+    \includegraphics[scale=#2]{#1}
+  \end{center}
+}
+
+\newenvironment{sistema}%
+{\left\lbrace\begin{array}{@{}l@{}}}%
+  {\end{array}\right.}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+
+\newcommand{\italiano}[1]{%
+  \begin{otherlanguage*}{italian}#1\end{otherlanguage*}}
+
+\lstnewenvironment{code}[1][]{ %
+  \lstset{ %
+    mathescape,
+    numbers=none,
+    frame=none,
+    basicstyle=\normalsize\ttfamily,
+    xleftmargin=2em,
+    #1
+  }}%
+  {}
+
+\newcommand{\linecode}[2]{ %
+  \lstinline[mathescape,#2]|#1|}
+
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+%\usepackage{marvosym}
+% \DeclareUnicodeCharacter{1e25}{\DOTH{}}
+
+
+\begin{document}
+
+\title{\textbf{TravelDream Project}}
+\author{\textbf{Tests}}
+\date{Riccardo B. Desantis - matr. 765106}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{Purpose}
+This document contains and explains the testing process and the testing results of the TravelDream project developed by one of the other teams taking the course of Software Engineering 2.
+
+\section{Test Participants}
+
+\begin{itemize}
+  \item \textbf{Evaluation Team}:
+  \begin{itemize}
+    \item Riccardo Benito Desantis (765106)
+  \end{itemize}
+  \item \textbf{Development Team}:
+  \begin{itemize}
+    \item Engida Selamawit Belete (815730)
+    \item Hu Sile (814739).
+  \end{itemize}
+\end{itemize}
+
+\section{Scope}
+
+This document will test the development of the TravelDream project by the assigned team. The testing will include the following functional requirements identified by the development team on the RASD document, divided by user role:
+\begin{itemize}
+  \item \textbf{Employee}:
+  \begin{itemize}
+    \item \textbf{FR1}: Adding flight, hotel and excursion product details
+    \item \textbf{FR2}: Delete basic product information the company offers
+    \item \textbf{FR3}: Modify product details
+    \item \textbf{FR4}: Create predefined travel packages
+    \item \textbf{FR5}: View registered customers
+    \item \textbf{FR6}: View basic product details
+  \end{itemize}
+  \item \textbf{Customer}:
+  \begin{itemize}
+    \item \textbf{FR7}: Register/login to the system : through a user friendly user interfaces
+    \item \textbf{FR8}: Search for travel packages
+    \item \textbf{FR9}: Personalize travel packages
+    \item \textbf{FR10}: Add/remove basic product
+    \item \textbf{FR11}: Delete package
+    \item \textbf{FR12}: Add departure and return date
+    \item \textbf{FR13}: Invite friends to access their personalized travel package (sharing travel ID)
+    \item \textbf{FR14}: Confirm the travel
+  \end{itemize}
+  \item \textbf{Customers' friends}:
+  \begin{itemize}
+    \item \textbf{FR15}: Join the travel package by registering in to the system
+    \item \textbf{FR16}: Visualize the travel package they are invited to access
+    \item \textbf{FR17}: Invite friends to access the package (? Modify package) after they become a customer themselves.
+  \end{itemize}
+\end{itemize}
+
+\section{Definition, acronyms, and abbreviations}
+The following acronyms will be used through the whole document:
+\begin{itemize}
+  \item FR: Functional Requirement
+  \item NFR: Non-Functional Requirement
+  \item G: Goal
+  \item RASD: Requirement And Analysis Specification
+  \item JUnit: Java unitary tests.
+\end{itemize}
+
+\section{References}
+\begin{itemize}
+  \item RASD TravelDream814739,815730.pdf
+  \item DD TravelDream 814739,815730.pdf
+  \item testing (2).pdf
+  \item User Manual -2-.pdf
+\end{itemize}
+
+\section{Overview}
+This document specifies the testing process, approaches and results of the development of the TravelDream project by the assigned team.\newline
+
+The document is organized in the following sections:
+\begin{enumerate}
+  \item \textbf{Introduction}: this section describes the purpose of the document including its scope, glossary and related documents used to do it.
+  \item \textbf{Test background}: contains a detailed explanation of the testing environment, test cases and approaches taken into account for executing the development testing.
+  \item \textbf{Development validation}: contains a detailed explanation of the analysis validation of the developed software based on the RASD document, design document, user manual and source code.
+  \item \textbf{Development verification}: contains a detailed explanation of the design test cases and the results obtained based on the outputs of the development and the project specification.
+\end{enumerate}
+
+\chapter{Test background}
+
+\section{Test objectives}
+The present testing is for validating and verification the following goals identified by the development group on the project specifications:
+\begin{itemize}
+  \item \textbf{G1}: To create an interactive website for the travel dream company that will attract several customers to join packages offered by the company
+  \item \textbf{G2}: To allow travel dream employee creates different kinds of travel packages that will attract different customers
+  \item \textbf{G3}: To allow Employee make modification to the different types of products
+  \item \textbf{G4}: Enable customers use packages the TravelDream company provides and personalize their own packages
+  \item \textbf{G5}: To allow customers invite their friends to join the packages
+  \item \textbf{G6}: To allow many other users who are invited by the customers of the TravelDream Company join packages and be customers.
+\end{itemize}
+
+\section{Test environment information}
+\begin{center}
+  \begin{tabular}{ | l | l |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Test environment information}} \\ \hline
+    Software tested: & TravelDream \\ \hline
+    Type & Web application using JSF, JSP, servlets and EJBs \\ \hline
+    Version & 1.0 \\ \hline
+    Goal & \multicolumn{1}{ |c| }{\parbox{0.8\textwidth}{
+      \vspace*{0.8\baselineskip}The testing is for validating and verification of the development of the TravelDream software defined in the assignment.\newline
+    
+    The testing will be validated with the goals \textbf{G1}, \textbf{G2}, \textbf{G3}, \textbf{G4}, \textbf{G5}, \textbf{G6}.
+    \vspace*{0.8\baselineskip}}
+  }\\ \hline
+    Author & Engida Selamawit Belete, Hu Sile \\ \hline
+      \end{tabular}
+    \end{center}
+
+\section{Aspects to be tested}
+Among the aspects to be tested besides the functional requirements mentioned in the scope of the document are the different documents created during the development process of the project by the development team, these documents also include the source code and the execution of the final software delivered.\newline
+
+The documents verified against the final software are:
+\begin{itemize}
+  \item RASD TravelDream814739,815730.pdf
+  \item DD TravelDream 814739,815730.pdf
+  \item testing (2).pdf
+  \item User Manual -2-.pdf.
+\end{itemize}
+
+\section{Approach}
+For validating and verifying the development project I've used the analysis approach and the testing approach, therefore a complete view of the development is achieved. The depth of the verification and validation was limited by the tester available time, therefore the execution of the tests are oriented to the functional requirements specified on the project description document.
+
+In the testing approach, black box and glass box tests were executed, that is: the functional requirements were verified not only using automatic test tools and executing the methods implemented by the development team in the business layer of the JEE architecture, but also by interacting with the web interface provided by the web client developed by the development team.
+
+In the analysis approach, a static analysis was executed on the RASD and Design Document published by the development team against the source code delivered for the test phase.
+
+\section{Hardware and software requirements}
+The minimum requirements defined in the RASD are here presented.
+
+\subsection{Hardware requirements}
+\begin{itemize}
+  \item CPU: Intel Pentium IV 2.5 GHZ
+  \item HDD: 40 GB
+  \item RAM: 128 MB
+  \item FSB: 533 MHz
+\end{itemize}
+The hardware used for the tests is:
+\begin{itemize}
+  \item CPU: Intel Core i7 2 GHz
+  \item HDD: 250 GB
+  \item RAM: 8 GB
+  \item FSB: 1600 MHz
+\end{itemize}
+so it satisfies completely the requirements.
+
+\subsection{Software requirements}
+\begin{itemize}
+  \item Software Operating System: Windows 7
+  \item Development Environment: Eclipse (Kepler) for Java EE Developers
+  \item Plugins required:
+  \begin{itemize}
+    \item SVN: Subversive
+    \item GlassFish Tools for Kepler
+  \end{itemize}
+  \item Java EE 7 JDK
+  \item Application Server: GlassFish Open Source Edition 4.0 \item Database: MySQL.
+\end{itemize}
+Even if the stated requirement is Eclipse, the team used Netbeans instead, as reported in other documents.
+
+The software used for the tests is:
+\begin{itemize}
+  \item Software Operating System: Mac OS X 10.9.1
+  \item Development Environment: Netbeans 7.4
+  \item Java EE 7 JDK
+  \item Glassfish 4
+  \item MySQL.
+\end{itemize}
+The different operating system in the testing system shouldn't be a problem, given the portability of the project and the servers used.
+
+\chapter{Development validation}
+This chapter contains the validation process and results done over the software development assigned. In the last chapter of the document the most important results are summarized.
+
+The elements considered are:
+\begin{itemize}
+  \item RASD TravelDream814739,815730.pdf
+  \item DD TravelDream 814739,815730.pdf
+  \item the source code.
+\end{itemize}
+
+\section{Requirements and Analysis Specification Document}
+The RASD document is well written, and even if it doesn't follow strictly the standard model it still has all the useful information for understanding the analysis process. Something to add:
+\begin{itemize}
+  \item The specification of the project talked about the 3 kind of actors that this project is taking into account; in the analysis of it, also the ``unregistered'' users had to be identified and considered, because they're also acting on the system (even if it is only for initiating the registration process).
+  \item Some mock-up of the interfaces considered would have been useful, especially for a first understanding of how the system would become when finished. 
+\end{itemize}
+
+\section{Design Document}
+Also the DD document doesn't follow strictly the standard model, but it still is well written and has the needed informations for the definition of the problem. But:
+\begin{itemize}
+  \item Still no mock-ups are shown.
+\end{itemize}
+
+\section{Source code}
+The source code comes with a user manual, providing screen shots and informations on how to run the system. The code itself is often understandable (even if arguably not commented). Some things I'd like to note are:
+\begin{itemize}
+  \item The approach to the problems sometimes seems a little too complicated, probably because the team had already a background on the JEE platform. The approach followed during the lectures is more understandable, specially for me, the tester, that had no prior knowledge about such platform.
+  
+  For example: the entities travel around the system in a not so clear way. It would have been much better if they had used Data Transfer Objects (DTOs). More on this in the next chapter.
+  \item The file names defined in the Design Document (DD) aren't followed in the realization of the project, and some elements of the DD aren't present at all. They should have followed better the design they did.
+  \item They didn't use the \texttt{@RolesAllowed} annotation ever, so they've only blocked the access to the methods via the different folders of the web pages.
+\end{itemize}
+
+\chapter{Development verification}
+
+\section{Functional Requirements testing}
+I've tried to write JUnit tests for this project, to test the functional requirements without using the graphical Web interface. Sadly, the Enterprise JavaBeans that are needed for this step aren't defined (because the Managed Beans are used everywhere instead).
+
+After hours of trying, I've skipped this part of the tests. I'm sure that it's my fault, but the little time available for the tests, and surely my little knowledge about the topic are really forcing me to go on with only the tests via the GUI.
+
+\section{Graphic User Interface (GUI) testing}
+In this section I've checked if the navigability of the Web tier satisfies the functional requirements and therefore the goals of the system.
+
+\subsection{User Login}
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{User Login}} \\ \hline
+    \textbf{Code} & T001 \\ \hline
+    \textbf{Purpose} & Checks if a client can login with an existent username and password, and if it is redirected from the login page to the right user page. \\ \hline
+    \textbf{Exec. Environment} & The login page, reachable clicking on the ``login'' link from the homepage. \\ \hline
+    \textbf{Input 1} & 1432146241, password \\ \hline
+    \textbf{Input 2} & 0, admin \\ \hline
+    \textbf{Input 3} & 1234, 1234 \\ \hline
+    \textbf{Expected Output 1} & Navigate to the consumer homepage. \\ \hline
+    \textbf{Expected Output 2} & Navigate to the employee homepage. \\ \hline
+    \textbf{Expected Output 3} & Return an error (wrong data). \\ \hline
+    \textbf{Current Output 1} & Navigate to the consumer homepage. \\ \hline
+    \textbf{Current Output 2} & Navigate to the employee homepage. \\ \hline
+    \textbf{Current Output 3} & Return an error (wrong data). \\ \hline
+    \textbf{Result} & The form correctly redirect to the right page or returns error when needed. \\ \hline
+    \textbf{Note} & Even if the form asks for the ``Email'' of the user, it actually wants the user id, that is assigned automatically at the registration. \\ \hline
+      \end{tabular}
+    \end{center}
+
+\subsection{User Logout}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{User Logout}} \\ \hline
+    \textbf{Code} & T002 \\ \hline
+    \textbf{Purpose} & Checks if a logged user can log out of the system, and go back to the homepage. \\ \hline
+    \textbf{Exec. Environment} & The user home page.\\ \hline
+    \textbf{Input} & Press the ``Logout'' link on the upper menu. \\ \hline
+    \textbf{Expected Output} & The user is logged out and goes back to the common home page. \\ \hline
+    \textbf{Current Output} & The user is logged out and goes back to the common home page. \\ \hline
+    \textbf{Result} & The logout link works, invalidating correctly the user session. \\ \hline
+    \textbf{Note} & -\\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Products}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Products}} \\ \hline
+    \textbf{Code} & T003 \\ \hline
+    \textbf{Purpose} & Checks if an employee can show the list of already defined products. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Product'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The products page is showed. \\ \hline
+    \textbf{Current Output} & The products page is showed. \\ \hline
+    \textbf{Result} & The list of the available products is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new Product}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new Product}} \\ \hline
+    \textbf{Code} & T004 \\ \hline
+    \textbf{Purpose} & Checks if an employee can create a new product. \\ \hline
+    \textbf{Exec. Environment} & The products page, reachable by clicking on the link ``Product'' in the menubar, from the user home pageof the employee logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the ProductId 11 (an id that is already used), the AmountAvailable 11, I select from the UserId list the id 0 and I click ``Save''. \\ \hline
+    \textbf{Input 2} & After clicking on the ``Create'' button, i put the ProductId 342 (an id that isn't already used), the AmountAvailable 11, I select from the UserId list the id 0 and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No product is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The product is added to the list. \\ \hline
+    \textbf{Current Output 1} & The product with the same id is updated! \\ \hline
+    \textbf{Current Output 2} & The product is added to the list. \\ \hline
+    \textbf{Result} & The creation process works, and adds also to the database. \\ \hline
+    \textbf{Note} & First of all, the id should be automatically assigned. It isn't clear what some of the fields in the form are. It would have been better to automatically select the id of the logged user, and it doesn't make sense to ask for, e.g, a flight id because we first need to create this product before creating a new flight to link to this. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a Product}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a Product}} \\ \hline
+    \textbf{Code} & T005 \\ \hline
+    \textbf{Purpose} & Checks if an employee can view, edit or remove a product. \\ \hline
+    \textbf{Exec. Environment} & The products page, reachable by clicking on the link ``Product'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After selecting a product in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a product in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a product in the list, I click the ``Edit'' button, changing the details of the product (e.g. the AmountAvailable) and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The product is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the product are showed. \\ \hline
+    \textbf{Expected Output 3} & The product is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The product is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The product is modified as requested. \\ \hline
+    \textbf{Current Output 3} & The details about the product are showed. \\ \hline
+    \textbf{Result} & The products can be viewed, modified and removed. \\ \hline
+    \textbf{Note} & The previous note still stands. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Excursions}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Excursions}} \\ \hline
+    \textbf{Code} & T006 \\ \hline
+    \textbf{Purpose} & Checks if an employee can show the list of already defined excursions. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Excursion'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The excursions page is showed. \\ \hline
+    \textbf{Current Output} & The excursions page is showed. \\ \hline
+    \textbf{Result} & The list of the available excursions is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new Excursion}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new Excursion}} \\ \hline
+    \textbf{Code} & T007 \\ \hline
+    \textbf{Purpose} & Checks if an employee can create a new excursion. \\ \hline
+    \textbf{Exec. Environment} & The excursions page, reachable by clicking on the link ``Excursion'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the ExcursionId 234, the Route Milano and the Product with an id already used for another excursion, and I click ``Save''. \\ \hline
+    \textbf{Input 2} & After clicking on the ``Create'' button, i put the ExcursionId 234, the Route Milano and the Product that we've just created, and I click ``Save''. \\ \hline
+    \textbf{Input 3} & After clicking on the ``Create'' button, i put the ExcursionId 11 (which is already used), the Route Milano and the Product that we've just created, and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No excursion is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The excursion is added to the list. \\ \hline
+    \textbf{Expected Output 3} & No excursion is added to the list. \\ \hline
+    \textbf{Current Output 1} & No excursion is added to the list. \\ \hline
+    \textbf{Current Output 2} & The excursion is added to the list. \\ \hline
+    \textbf{Current Output 3} & The excursion with the same id is updated! \\ \hline
+    \textbf{Result} & The creation process works. \\ \hline
+    \textbf{Note} & The id should be assigned automatically! The product id requested should automatically be associated with a new product: the user shouldn't create first a ``bland'' product and then the realization. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of an Excursion}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of an Excurion}} \\ \hline
+    \textbf{Code} & T008 \\ \hline
+    \textbf{Purpose} & Checks if an employee can view, edit or remove an excursion. \\ \hline
+    \textbf{Exec. Environment} & The excursions page, reachable by clicking on the link ``Excursion'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After selecting an excursion in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting an excursion in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting an excursion in the list, I click the ``Edit'' button, changing the details of the excursion and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The excursion is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the excursion are showed. \\ \hline
+    \textbf{Expected Output 3} & The excursion is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The excursion is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the excursion are showed. \\ \hline
+    \textbf{Current Output 3} & The excursion is modified as requested. \\ \hline
+    \textbf{Result} & It is possible to show/edit/modify the excursions. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Flights}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Flights}} \\ \hline
+    \textbf{Code} & T009 \\ \hline
+    \textbf{Purpose} & Checks if an employee can show the list of already defined flights. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Flight'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The flights page is showed. \\ \hline
+    \textbf{Current Output} & The flights page is showed. \\ \hline
+    \textbf{Result} & The list of the available flights is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new Flight}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new Flight}} \\ \hline
+    \textbf{Code} & T010 \\ \hline
+    \textbf{Purpose} & Checks if an employee can create a new flight. \\ \hline
+    \textbf{Exec. Environment} & The flights page, reachable by clicking on the link ``Flight'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the FlightId 234, the FlightOrigin Milano, the FlightDestination Roma,  and the Product with an id already used for another flight, and I click ``Save''. \\ \hline
+    \textbf{Input 2} & After clicking on the ``Create'' button, i put the FlightId 234, the FlightOrigin Milano, the FlightDestination Roma,  and the Product with an id of a product that we've just created, and I click ``Save''. \\ \hline
+    \textbf{Input 3} & After clicking on the ``Create'' button, i put the FlightId 11 (which is already used), the FlightOrigin Milano, the FlightDestination Roma,  and the Product with an id of a product that we've just created, and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No flight is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The flight is added to the list. \\ \hline
+    \textbf{Expected Output 3} & No flight is added to the list. \\ \hline
+    \textbf{Current Output 1} & No flight is added to the list. \\ \hline
+    \textbf{Current Output 2} & The flight is added to the list. \\ \hline
+    \textbf{Current Output 3} & The flight with the same id is updated! \\ \hline
+    \textbf{Result} & The creation process works. \\ \hline
+    \textbf{Note} & The id should be assigned automatically. The product id requested should automatically be associated with a new product: the user shouldn't create first a ``bland'' product and then the realization. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a Flight}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a Flight}} \\ \hline
+    \textbf{Code} & T011 \\ \hline
+    \textbf{Purpose} & Checks if an employee can view, edit or remove a flight. \\ \hline
+    \textbf{Exec. Environment} & The flights page, reachable by clicking on the link ``Flight'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After selecting a flight in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a flight in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a flight in the list, I click the ``Edit'' button, changing the details of the flight and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The flight is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the flight are showed. \\ \hline
+    \textbf{Expected Output 3} & The flight is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The flight is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the flight are showed. \\ \hline
+    \textbf{Current Output 3} & The flight is modified as requested. \\ \hline
+    \textbf{Result} & The flights can be showed/modified/removed. \\ \hline
+    \textbf{Note} & Even if the date is modified on the database, it keep showing the previous one. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Hotels}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Hotels}} \\ \hline
+    \textbf{Code} & T012 \\ \hline
+    \textbf{Purpose} & Checks if an employee can show the list of already defined hotels. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Hotel'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The hotels page is showed. \\ \hline
+    \textbf{Current Output} & The hotels page is showed. \\ \hline
+    \textbf{Result} & The list of the available hotels is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new Hotel}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new Hotel}} \\ \hline
+    \textbf{Code} & T013 \\ \hline
+    \textbf{Purpose} & Checks if an employee can create a new hotel. \\ \hline
+    \textbf{Exec. Environment} & The hotels page, reachable by clicking on the link ``Hotel'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the HotelId 234, the HotelName Miramare, the Product with an id already used for another hotel,  and I click ``Save''. \\ \hline
+    \textbf{Input 2} & After clicking on the ``Create'' button, i put the HotelId 234, the HotelName Miramare, the Product of a product that we've just created,  and I click ``Save''. \\ \hline
+    \textbf{Input 3} & After clicking on the ``Create'' button, i put the HotelId 11 (which is already used), the HotelName Miramare, the Product of a product that we've just created,  and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No hotel is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The hotel is added to the list. \\ \hline
+    \textbf{Expected Output 3} & No hotel is added to the list. \\ \hline
+    \textbf{Current Output 1} & No hotel is added to the list. \\ \hline
+    \textbf{Current Output 2} & The hotel is added to the list. \\ \hline
+    \textbf{Current Output 2} & The hotel with the same id is updated! \\ \hline
+    \textbf{Result} & The creation process works. \\ \hline
+    \textbf{Note} & The id should be assigned automatically! The product id requested should automatically be associated with a new product: the user shouldn't create first a ``bland'' product and then the realization. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a Hotel}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a Hotel}} \\ \hline
+    \textbf{Code} & T014 \\ \hline
+    \textbf{Purpose} & Checks if an employee can view, edit or remove a hotel. \\ \hline
+    \textbf{Exec. Environment} & The hotels page, reachable by clicking on the link ``Hotel'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After selecting a hotel in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a hotel in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a hotel in the list, I click the ``Edit'' button, changing the details of the product and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The hotel is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the hotel are showed. \\ \hline
+    \textbf{Expected Output 3} & The hotel is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The hotel is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the hotel are showed. \\ \hline
+    \textbf{Current Output 3} & The hotel is modified as requested. \\ \hline
+    \textbf{Result} & The hotels can be modified/showed/removed. \\ \hline
+    \textbf{Note} & Even if the date is modified on the database, it keep showing the previous one. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the General Packages}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the General Packages}} \\ \hline
+    \textbf{Code} & T015 \\ \hline
+    \textbf{Purpose} & Checks if an employee can show the list of already defined general packages. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Generalpackage'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The general packages page is showed. \\ \hline
+    \textbf{Current Output} & The general packages page is showed. \\ \hline
+    \textbf{Result} & The list of the available general packages is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new General Package}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new General Package}} \\ \hline
+    \textbf{Code} & T016 \\ \hline
+    \textbf{Purpose} & Checks if an employee can create a new general package. \\ \hline
+    \textbf{Exec. Environment} & The general package page, reachable by clicking on the link ``Generalpackage'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the GPackageId 555 (an id that is already used), the price 100, the UserId 0 (that is the id of the employee logged in), and I click ``Save''. \\ \hline
+    \textbf{Input 2} & After clicking on the ``Create'' button, i put the GPackageId 234 (an id that isn't already used), the price 100, the UserId 0 (that is the id of the employee logged in), and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No general package is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The general package is added to the list. \\ \hline
+    \textbf{Current Output 1} & The previous record is updated! \\ \hline
+    \textbf{Current Output 2} & The general package is added to the list. \\ \hline
+    \textbf{Result} & The creation process works if the given id isn't already used. \\ \hline
+    \textbf{Note} & The package id should be automatically computed, not requested. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a General Package}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a General Package}} \\ \hline
+    \textbf{Code} & T017 \\ \hline
+    \textbf{Purpose} & Checks if an employee can view, edit or remove a general package. \\ \hline
+    \textbf{Exec. Environment} & The general package page, reachable by clicking on the link ``Generalpackage'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After selecting a general package in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a general package in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a general package in the list, I click the ``Edit'' button, changing the details of the product and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The general package is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the general package are showed. \\ \hline
+    \textbf{Expected Output 3} & The general package is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The general package is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the general package are showed. \\ \hline
+    \textbf{Current Output 3} & The general package is modified as requested. \\ \hline
+    \textbf{Result} & The general packages can be modified/showed/removed. \\ \hline
+    \textbf{Note} & Even if the date is modified on the database, it keep showing the previous one. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Product Containments}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Product Containments}} \\ \hline
+    \textbf{Code} & T018 \\ \hline
+    \textbf{Purpose} & Checks if an employee can show the list of already defined product containments. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Productcontainment'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The product containments page is showed. \\ \hline
+    \textbf{Current Output} & The product containments page is showed. \\ \hline
+    \textbf{Result} & The list of the available product containments is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new Product Containment}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new Product Containment}} \\ \hline
+    \textbf{Code} & T019 \\ \hline
+    \textbf{Purpose} & Checks if an employee can create a new product containment. \\ \hline
+    \textbf{Exec. Environment} & The product containment page, reachable by clicking on the link ``Productcontainment'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the PCId 23 (an id that is already used), the ProductId 11 (selecting from the list), the GPackageId 670 (selecting from the list), and I click ``Save''. \\ \hline
+    \textbf{Input 2} & After clicking on the ``Create'' button, i put the PCId 23 (an id that isn't already used), the ProductId 11 (selecting from the list), the GPackageId 670 (selecting from the list), and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No product containment is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The product containment is added to the list. \\ \hline
+    \textbf{Current Output 1} & The previous record is updated! \\ \hline
+    \textbf{Current Output 2} & The product containment is added to the list. \\ \hline
+    \textbf{Result} & The creation process works if the given id isn't already used. \\ \hline
+    \textbf{Note} & The id should be automatically computed, not requested. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a Product Containment}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a Product Containment}} \\ \hline
+    \textbf{Code} & T020 \\ \hline
+    \textbf{Purpose} & Checks if an employee can view, edit or remove a product containment. \\ \hline
+    \textbf{Exec. Environment} & The product containment page, reachable by clicking on the link ``Productcontainment'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After selecting a product containment in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a product containment in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a product containment in the list, I click the ``Edit'' button, changing the details of the product and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The product containment is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the product containment are showed. \\ \hline
+    \textbf{Expected Output 3} & The product containment is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The product containment is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the product containment are showed. \\ \hline
+    \textbf{Current Output 3} & The product containment is modified as requested. \\ \hline
+    \textbf{Result} & The product containments can be modified/showed/removed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Users}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Users}} \\ \hline
+    \textbf{Code} & T021 \\ \hline
+    \textbf{Purpose} & Checks if an employee can show the list of already defined users. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee logged in. \\ \hline
+    \textbf{Input} & Click on the link ``User'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The users page is showed. \\ \hline
+    \textbf{Current Output} & The users page is showed. \\ \hline
+    \textbf{Result} & The list of the available users is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new User}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new User}} \\ \hline
+    \textbf{Code} & T022 \\ \hline
+    \textbf{Purpose} & Checks if an employee can create a new user. \\ \hline
+    \textbf{Exec. Environment} & The user page, reachable by clicking on the link ``User'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the UserId 0 (an id that is already used), the password password, the Role user, and I click ``Save''. \\ \hline
+    \textbf{Input 2} & After clicking on the ``Create'' button, i put the UserId 0 (an id that isn't already used), the password password, the Role user, and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No user is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The user is added to the list. \\ \hline
+    \textbf{Current Output 1} & The previous record is updated! \\ \hline
+    \textbf{Current Output 2} & The user is added to the list. \\ \hline
+    \textbf{Result} & The creation process works if the given id isn't already used. \\ \hline
+    \textbf{Note} & The id should be automatically computed, not requested. Plus, the password should be hashed as requested (MD5 + SHA-512), and not saved in clear. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a User}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a User}} \\ \hline
+    \textbf{Code} & T023 \\ \hline
+    \textbf{Purpose} & Checks if an employee can view, edit or remove a user. \\ \hline
+    \textbf{Exec. Environment} & The user page, reachable by clicking on the link ``User'' in the menubar, from the user home page of the employee logged in. \\ \hline
+    \textbf{Input 1} & After selecting a user in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a user in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a user in the list, I click the ``Edit'' button, changing the details of the product and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The user is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the user are showed. \\ \hline
+    \textbf{Expected Output 3} & The user is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The user is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the user are showed. \\ \hline
+    \textbf{Current Output 3} & The user is modified as requested. \\ \hline
+    \textbf{Result} & The users can be modified/showed/removed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Registration of a User}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Registration of a User}} \\ \hline
+    \textbf{Code} & T024 \\ \hline
+    \textbf{Purpose} & Checks if visitor can register to the system. \\ \hline
+    \textbf{Exec. Environment} & The register page, reachable clicking the ``register'' link from the homepage. \\ \hline
+    \textbf{Input} & After filling the data, I click the ``Register'' button. \\ \hline
+    \textbf{Expected Output} & The is registered. \\ \hline
+    \textbf{Current Output} & Nothing happens. \\ \hline
+    \textbf{Result} & It isn't possible to register at the moment. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Personal Packages}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Personal Packages}} \\ \hline
+    \textbf{Code} & T025 \\ \hline
+    \textbf{Purpose} & Checks if an employee/user can show the list of already defined personal packages. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee/user logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Personalpackage'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The personal packages page is showed. \\ \hline
+    \textbf{Current Output} & The personal packages page is showed. \\ \hline
+    \textbf{Result} & The list of the available personal packages is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new Personal Package}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new Personal Package}} \\ \hline
+    \textbf{Code} & T026 \\ \hline
+    \textbf{Purpose} & Checks if an employee/user can create a new personal package. \\ \hline
+    \textbf{Exec. Environment} & The personal package page, reachable by clicking on the link ``Personalpackage'' in the menubar, from the personal package home page of the employee/user logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the PPackageId 66 (an id that is already used), the GPackageId 555 (selecting from the list), the UserId 123 (selecting from the list), and I click ``Save''. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the PPackageId 1435 (an id that isn't already used), the GPackageId 555 (selecting from the list), the UserId 123 (selecting from the list), and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No personal package is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The personal package is added to the list. \\ \hline
+    \textbf{Current Output 1} & The previous record is updated! \\ \hline
+    \textbf{Current Output 2} & The personal package is added to the list. \\ \hline
+    \textbf{Result} & The creation process works if the given id isn't already used. \\ \hline
+    \textbf{Note} & The id should be automatically computed, not requested. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a Personal Package}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a Personal Package}} \\ \hline
+    \textbf{Code} & T027 \\ \hline
+    \textbf{Purpose} & Checks if an employee/user can view, edit or remove a personal package. \\ \hline
+    \textbf{Exec. Environment} & The personal package page, reachable by clicking on the link ``Personalpackage'' in the menubar, from the personal package home page of the employee/user logged in. \\ \hline
+    \textbf{Input 1} & After selecting a personal package in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a personal package in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a personal package in the list, I click the ``Edit'' button, changing the details of the product and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The personal package is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the personal package are showed. \\ \hline
+    \textbf{Expected Output 3} & The personal package is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The personal package is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the personal package are showed. \\ \hline
+    \textbf{Current Output 3} & The personal package is modified as requested. \\ \hline
+    \textbf{Result} & The personal packages can be modified/showed/removed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Listing of the Modifications}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Listing of the Modifications}} \\ \hline
+    \textbf{Code} & T028 \\ \hline
+    \textbf{Purpose} & Checks if an employee/user can show the list of already defined modifications. \\ \hline
+    \textbf{Exec. Environment} & The user home page of the employee/user logged in. \\ \hline
+    \textbf{Input} & Click on the link ``Modification'' in the voice ``Menu'' in the menubar. \\ \hline
+    \textbf{Expected Output} & The modifications page is showed. \\ \hline
+    \textbf{Current Output} & The modifications page is showed. \\ \hline
+    \textbf{Result} & The list of the available modifications is showed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Creation of a new Modification}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Creation of a new Modification}} \\ \hline
+    \textbf{Code} & T029 \\ \hline
+    \textbf{Purpose} & Checks if an employee/user can create a new modification. \\ \hline
+    \textbf{Exec. Environment} & The modification page, reachable by clicking on the link ``Modification'' in the menubar, from the modification home page of the employee/user logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the Mid 77 (an id that is already used), the ProductId 11 (selecting from the list), the PPackageId 66 (selecting from the list), and I click ``Save''. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the Mid 234 (an id that isn't already used), the ProductId 11 (selecting from the list), the PPackageId 66 (selecting from the list), and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No modification is added to the list. \\ \hline
+    \textbf{Expected Output 2} & The modification is added to the list. \\ \hline
+    \textbf{Current Output 1} & The previous record is updated! \\ \hline
+    \textbf{Current Output 2} & The modification is added to the list. \\ \hline
+    \textbf{Result} & The creation process works if the given id isn't already used. \\ \hline
+    \textbf{Note} & The id should be automatically computed, not requested. \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Handling of a Modification}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Handling of a Modification}} \\ \hline
+    \textbf{Code} & T030 \\ \hline
+    \textbf{Purpose} & Checks if an employee/user can view, edit or remove a modification. \\ \hline
+    \textbf{Exec. Environment} & The modification page, reachable by clicking on the link ``Modification'' in the menubar, from the modification home page of the employee/user logged in. \\ \hline
+    \textbf{Input 1} & After selecting a modification in the list, I click the ``Delete'' button. \\ \hline
+    \textbf{Input 2} & After selecting a modification in the list, I click the ``View'' button. \\ \hline
+    \textbf{Input 3} & After selecting a modification in the list, I click the ``Edit'' button, changing the details of the product and saving the modification via the ``Save'' button. \\ \hline
+    \textbf{Expected Output 1} & The modification is deleted from the list. \\ \hline
+    \textbf{Expected Output 2} & The details about the modification are showed. \\ \hline
+    \textbf{Expected Output 3} & The modification is modified as requested. \\ \hline
+    \textbf{Current Output 1} & The modification is deleted from the list. \\ \hline
+    \textbf{Current Output 2} & The details about the modification are showed. \\ \hline
+    \textbf{Current Output 3} & The modification is modified as requested. \\ \hline
+    \textbf{Result} & The modifications can be modified/showed/removed. \\ \hline
+    \textbf{Note} & - \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Adding of a Friend to a Personal Package}
+
+\begin{center}
+  \begin{tabular}{ | p{4cm} | p{13cm} |}
+    \hline
+    \multicolumn{2}{ |c| }{\textbf{Adding of a Friend to a Personal Package}} \\ \hline
+    \textbf{Code} & T031 \\ \hline
+    \textbf{Purpose} & Checks if an employee/user can add a friend to a personal package. \\ \hline
+    \textbf{Exec. Environment} & The personal package page, reachable by clicking on the link ``Personalpackage'' in the menubar, from the personal package home page of the employee/user logged in. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, I put the PPackageId 66 (an id that is already used), the GPackageId 555 (selecting from the list), the UserId of my friend, 123 (selecting from the list), that should already be registered, and I click ``Save''. \\ \hline
+    \textbf{Input 1} & After clicking on the ``Create'' button, i put the PPackageId 1435 (an id that isn't already used), the GPackageId 555 (selecting from the list), the UserId of my friend, 123 (selecting from the list), that should already be registered, and I click ``Save''. \\ \hline
+    \textbf{Expected Output 1} & No friend is added to the personal package. \\ \hline
+    \textbf{Expected Output 2} & The friend is added to the personal package. \\ \hline
+    \textbf{Current Output 1} & The original record is updated, making the friend the new owner of the personal package! \\ \hline
+    \textbf{Current Output 2} & The friend is added to the personal package. \\ \hline
+    \textbf{Result} & The adding of a friend works if the given id isn't already used. \\ \hline
+    \textbf{Note} & The id should be automatically computed, not requested. There's no difference with the adding of a new personal package. \\ \hline
+  \end{tabular}
+\end{center}
+
+\section{Conclusions}
+Other than the suggestions that I've written in the tests above, I'd suggest to \textit{hide the links} to the elements that the customers aren't allowed to see, because the error page isn't a nice solution. Not only this: the customer is even allowed to modify excursions, flights, and so on (that is everything he/she can see without the 403 error page).
+
+\chapter{Appendix}
+
+\section{Hours spent for each part of the project}
+\begin{center}
+  \begin{tabular}{ | r | c |}
+    \hline
+    & \textbf{Riccardo B. Desantis} \\ \hline
+    \textbf{RASD} & 15 h \\ \hline
+    \textbf{DD} & 32 h \\ \hline
+    \textbf{Implementation} & 120 h \\ \hline
+    \textbf{Testing} & 20 h \\ \hline
+    
+  \end{tabular}
+\end{center}
+
+\end{document}
