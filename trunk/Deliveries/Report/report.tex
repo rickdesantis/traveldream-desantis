@@ -1,0 +1,363 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{fancyvrb}
+\usepackage{eurosym}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{multirow}
+\usepackage[font={footnotesize,it}]{caption}
+
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.5}
+
+\usepackage[margin=0.7in]{geometry}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=trbl,
+  %xleftmargin=\parindent,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  %identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  numbers=left,
+  tabsize=2,
+  frameround=tttt,
+  numberstyle=\footnotesize\ttfamily,
+  xrightmargin=50pt,
+  xleftmargin=50pt,
+  escapeinside={(*@}{@*)},
+  morekeywords={pipe,module,in,out},
+}
+\lstset{escapechar=@,style=customc}
+
+\usepackage{ifpdf}
+\ifpdf
+    \usepackage[pdftex]{graphicx}   % to include graphics
+    \pdfcompresslevel=9
+    \usepackage[pdftex,     % sets up hyperref to use pdftex driver
+            plainpages=false,   % allows page i and 1 to exist in the same document
+            breaklinks=true,    % link texts can be broken at the end of line
+            colorlinks=true,
+            pdftitle={Project Report for the TravelDream Project}
+            pdfauthor={Riccardo B. Desantis}
+           ]{hyperref}
+    \usepackage{thumbpdf}
+\else
+    \usepackage{graphicx}       % to include graphics
+    \usepackage{hyperref}       % to simplify the use of \href
+\fi
+
+\graphicspath{{images/}}
+
+\newcommand{\insimg}[3]{
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[scale=#3]{#1}
+    \end{center}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}
+}
+
+\newcommand{\putimg}[2]{
+  \begin{center}
+    \includegraphics[scale=#2]{#1}
+  \end{center}
+}
+
+\newenvironment{sistema}%
+{\left\lbrace\begin{array}{@{}l@{}}}%
+  {\end{array}\right.}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+
+\newcommand{\italiano}[1]{%
+  \begin{otherlanguage*}{italian}#1\end{otherlanguage*}}
+
+\lstnewenvironment{code}[1][]{ %
+  \lstset{ %
+    mathescape,
+    numbers=none,
+    frame=none,
+    basicstyle=\normalsize\ttfamily,
+    xleftmargin=2em,
+    #1
+  }}%
+  {}
+
+\newcommand{\linecode}[2]{ %
+  \lstinline[mathescape,#2]|#1|}
+
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+%\usepackage{marvosym}
+% \DeclareUnicodeCharacter{1e25}{\DOTH{}}
+
+
+\begin{document}
+
+\title{\textbf{TravelDream Project}}
+\author{\textbf{Project Report}}
+\date{Riccardo B. Desantis - matr. 765106}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{Purpose}
+The purpose of this document is to present the results of the computation of the FP and COCOMO analysis on the TravelDream project developed for the Software Engineering 2 course.
+
+\section{Definition, acronyms, and abbreviations}
+The following acronyms will be used through the whole document:
+\begin{itemize}
+  \item UFP: Unadjusted Function Points
+  \item FP: Function Points
+  \item ILF: Internal Logical File
+  \item EIF: External Interface File
+  \item RET: Record Element Type
+  \item FTR: File Type Referenced
+  \item DET: Data Element Type
+  \item COCOMO: Constructive Cost Model.
+\end{itemize}
+
+\section{References}
+\begin{itemize}
+  \item Progetto AA 2013-2014 (TravelDream).pdf
+  \item rasd.pdf
+  \item dd.pdf.
+\end{itemize}
+
+\section{Overview}
+This document specifies the computation of some of the software metrics, FP and COCOMO, on the TravelDream project developed.\newline
+
+The document is organized in the following sections:
+\begin{enumerate}
+  \item \textbf{Introduction}: this section describes the purpose of the document including its scope, glossary and related documents used to do it.
+  \item \textbf{Software Metrics}: contains a detailed explanation of the process used to compute the metrics, and the results of such computations.
+  \item \textbf{Conclusions}: contains the comparison between the actual data with the computed one.
+\end{enumerate}
+
+\chapter{Software Metrics}
+
+\section{FP}
+
+\subsection{Introduction}
+To compute the \textbf{Function Points} (\textbf{FP}) of our project, we first consider the \textbf{Unadjusted Function Points} (\textbf{UFP}) and we then correct such computation. To compute the latter, we identify and count the \textbf{function types} and we weight them using this table:
+
+\begin{center}
+  \begin{tabular}{ | r | c | c | c |}
+    \hline
+    \multirow{2}{*}{\textbf{Function Types}} & \multicolumn{3}{ |c| }{\textbf{Weight}} \\ 
+    & Simple & Medium & Complex \\ \hline
+    N. Inputs & 3 & 4 & 6 \\ \hline 
+    N. Outputs & 4 & 5 & 7 \\ \hline
+    N. Inquiry & 3 & 4 & 6 \\ \hline
+    N. ILF & 7 & 10 & 15 \\ \hline
+    N. EIF & 5 & 7 & 10 \\ \hline
+  \end{tabular}
+\end{center}
+where the class of weights is chosen considering the DETs, RETs and FTRs:
+\begin{itemize}
+  \item for ILF and EIF:
+\begin{center}
+  \begin{tabular}{ | r | c | c | c |}
+    \hline
+    \multirow{2}{*}{\textbf{RETs}} & \multicolumn{3}{ |c| }{\textbf{DETs}} \\
+    & 1-19 & 20-50 & $\geq$ 51 \\ \hline
+    1 & Simple & Simple & Medium \\ \hline
+    2-5 & Simple & Medium & Complex \\ \hline
+    $\geq$ 6 & Medium & Complex & Complex \\ \hline
+  \end{tabular}
+\end{center}
+\item for the External Inputs:
+\begin{center}
+  \begin{tabular}{ | r | c | c | c |}
+    \hline
+    \multirow{2}{*}{\textbf{FTRs}} & \multicolumn{3}{ |c| }{\textbf{DETs}} \\
+    & 1-4 & 5-15 & $\geq$ 16 \\ \hline
+    0-1 & Simple & Simple & Medium \\ \hline
+    2 & Simple & Medium & Complex \\ \hline
+    $\geq$ 3 & Medium & Complex & Complex \\ \hline
+  \end{tabular}
+\end{center}
+\item for the External Outputs and Inquiries:
+\begin{center}
+  \begin{tabular}{ | r | c | c | c |}
+    \hline
+    \multirow{2}{*}{\textbf{FTRs}} & \multicolumn{3}{ |c| }{\textbf{DETs}} \\
+    & 1-5 & 6-19 & $\geq$ 20 \\ \hline
+    0-1 & Simple & Simple & Medium \\ \hline
+    2-3 & Simple & Medium & Complex \\ \hline
+    $\geq$ 4 & Medium & Complex & Complex \\ \hline
+  \end{tabular}
+\end{center}
+\end{itemize}
+
+Given the computed UFP, we compute the FP using this formula:
+\[
+  FP = UFP \times \left( 0.65 + 0.01 \times \sum_{i=1}^{14} F_i \right)
+\]
+where the $F_i$s are values from 0 to 5 (for increasing importance from no influence to essential) answering these questions:
+\begin{enumerate}
+  \item How many data communication facilities are there?  \item How are distributed data and processing functions handled?  \item Was response time or throughput required by the user?  \item How heavily used is the current hardware platform?  \item How frequently are transactions executed?  \item What percentage of the information is entered online?  \item Was the application designed for end-user efficiency?  \item How many internal logical files are updated by on-line transaction?  \item Does the application have extensive logical or math processing?  \item Was the application developed to meet one or many user needs?  \item How difficult is conversion and installation?  \item How effective/automated are startup, backup, and recovery?  \item Was the application designed for multiple sites/organizations?  \item Was the application designed to facilitate change?
+\end{enumerate}
+
+Given now the conversion table from function points to \textbf{Lines Of Code} (\textbf{LOC}) per languages, on
+\url{http://www.qsm.com/resources/function-point-languages-table},  we have, considering only the ``high'' value to stay safe:
+\begin{center}
+  \begin{tabular}{ | l | c |}
+    \hline
+    \textbf{Language} & \textbf{LOC per FP} \\ \hline
+    C & 333 \\ \hline
+    C++ & 80 \\ \hline
+    Java & 134 \\ \hline
+    J2EE & 67 \\ \hline
+    HTML & 48 \\ \hline
+    SQL & 37 \\ \hline
+    JavaScript & 63 \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Computation}
+Considering now the project, we have these function types:
+\begin{itemize}
+  \item Internal Logic File (ILF): the application stores the information about:
+  \begin{itemize}
+    \item \textit{users} (7 DETs, 2 RETs: Simple),
+    \item \textit{components} (6 DETs, 4 RETs: Simple),
+    \item \textit{packages} (3 DETs, 1 RET: Simple),
+    \item \textit{customized packages} (5 DETs, 1 RET: Simple),
+  \end{itemize}
+  thus we can consider 4 Simple ILFs;
+  \item External Interface File (EIF): the application doesn't use any external data, thus there are no EIFs;
+  \item External Inputs: the application interacts with two actor, and for each of these expose different services:
+  \begin{itemize}
+    \item \textit{login}, \textit{logout} and \textit{registration} (1 FTR, 2 DETs: Simple) for both customers and employees;
+    \item \textit{buying of a package} (2 FTRs, at least 5 but less than 16 DETs: Medium) for a customer;
+    \item \textit{customization of a package} (3 FTRs, at least 5 DETs: Complex) for a customer;
+    \item \textit{insertion} and \textit{deletion of a component} (1 FTR, less than 16 DETs: Simple) for an employee;
+    \item \textit{insertion} and \textit{deletion of a package} (2 FTR, less than 16 DETs but at least 5: Medium) for an employee.
+  \end{itemize}
+  
+  Thus we have 5 Simple EI, 3 Medium EI, 1 Complex EI;
+  \item External Outputs: none, because no EIF is used;
+  \item External Inquiry: we have
+  \begin{itemize}
+    \item showing of the \textit{profiles} of the users (1 FTR, less than 20 DETs: Simple);
+    \item \textit{listing of the packages} (2 FTRs: Medium);
+    \item \textit{listing of the components} (1 FTR: Simple);
+    \item \textit{listing of the customized packages} (3 FTRs: Medium).
+  \end{itemize}
+  
+  We have then 2 Simple EQ, 2 Medium EQ.
+\end{itemize}
+5 Simple EI, 3 Medium EI, 1 Complex EI;
+Summing up, considering the weights, we compute the UFP:
+\[
+  UFP = (4 \times 7) + (5 \times 3 + 3 \times 4 + 1 \times 6) + (2 \times 3 + 2 \times 4) = 75.
+\]
+
+To compute the Value Adjustment Equation we consider a score of 27 (given by assigning $F_6 = 5$, $F_7 = 5$, $F_8 = 5$, $F_{10} = 4$, $F_{14} = 5$, $F_3 = 3$), then:
+\[
+  FP = 75 \times (0.65 + 0.01 \times 27) = 69
+\]
+that corresponds to
+\[
+  LOC = 67 \times 69 = 4624 \Longrightarrow KLOC = 4.624
+\]
+in J2EE given the table.
+
+\section{COCOMO}
+
+\subsection{Introduction}
+\textbf{COCOMO} identifies three classes of applications:
+\begin{itemize}
+  \item \textbf{Simple} (\textbf{Organic mode})
+  \item \textbf{Intermediate} (\textbf{Semi-detached mode})
+  \item \textbf{Complex} (\textbf{Embedded mode})
+\end{itemize}
+and computes an estimation of \textbf{effort} (as in \textbf{person months}: \textbf{M}) and \textbf{calendar time} (in \textbf{months}: \textbf{T}) and the resulting number of people needed (\textbf{N}, resulting from $\frac{M}{T}$).
+
+The estimation is computed with a hierarchy of models of increasing complexity:
+\begin{itemize}
+  \item \textbf{Basic} is a static single-valued model that computes software development effort (and cost) as a function of program size expressed in estimated lines of code;
+  \item \textbf{Intermediate} computes software development effort as function of program size and a set of ``cost drivers'' that include subjective assessment of product, hardware, personnel, and project attributes;
+  \item \textbf{Advanced} incorporates all characteristics of the intermediate version with an assessment of the cost driver's impact on each step (analysis, design, etc.) of the software engineering process.
+\end{itemize}
+
+Considering only the basic COCOMO, given the program size \textbf{S}:
+  \[
+    M = a_b S^{b_b}
+  \]
+  \[
+    T = c_b S^{d_b}
+  \]
+  where
+  \begin{center}
+  \begin{tabular}{ | r | c | c | c | c |}
+    \hline
+    \textbf{Type of application} & $a_b$ & $b_b$ & $c_b$ & $d_b$ \\ \hline 
+    Organic mode & 2.4 & 1.05 & 2.5 & 0.38 \\ \hline
+    Semi-detached mode & 3.0 & 1.12 & 2.5 & 0.35 \\ \hline
+    Embedded mode & 3.6 & 1.20 & 2.5 & 0.32 \\ \hline
+   \end{tabular}
+\end{center}
+
+\subsection{Computation}
+Considering now our project as a complex application (that is considering the embedded mode then), we'll compute, using $S=KLOC$ at the previous point:
+\[
+  M = 3.6 \times {4.624}^{1.2} = 22.611 \; \text{person}/\text{months}
+\]
+\[
+  T = 2.5 \times {4.624}^{0.32} = 4.08 \; \text{months}
+\]
+giving the number of requested people:
+\[
+  N = \frac{M}{T} = \frac{22.611}{4.08} = 5.542 \simeq 6 \;\text{people}.
+\]
+
+\chapter{Conclusions}
+
+\section{Comparisons}
+The actual KLOC written for the project (only considering the Java files) are $4.517$, instead of the computed $4.624$. That is pretty close!\newline
+
+For the COCOMO method, we had this table of hours used:
+\begin{center}
+  \begin{tabular}{ | r | c |}
+    \hline
+    & \textbf{Riccardo B. Desantis} \\ \hline
+    \textbf{RASD} & 15 h \\ \hline
+    \textbf{DD} & 32 h \\ \hline
+    \textbf{Implementation} & 120 h \\ \hline
+    \textbf{Testing} & 20 h \\ \hline    
+  \end{tabular}
+\end{center}
+giving us a total of 187 h for 1 person. Considering a working environment with 8 hours per day for 5 days a week and 4 weeks a month (that is 20 days a month), it is:
+\[
+  \frac{187 \; h}{8 \; \frac{h}{\text{day}}} * \frac{1}{20 \; \frac{\text{days}}{\text{month}} } = 1.17 \; \text{months}
+\]
+that is much less than the computed one.
+
+\end{document}
